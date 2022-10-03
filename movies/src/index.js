@@ -70,9 +70,13 @@ const sample = {
   ],
   production_countries: [
     {
-      iso_3166_1: "US",
-      name: "United States of America",
+      iso_3166_1: "FR",
+      name: "France",
     },
+    {
+      iso_3166_2: "LTH",
+      name: "Lithuania",
+    }
   ],
   release_date: "2017-12-13",
   revenue: 1332459537,
