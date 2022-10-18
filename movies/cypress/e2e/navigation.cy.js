@@ -49,7 +49,13 @@ describe("Navigation", () => {
     );
   });
   describe("From the favourites page to a movie's details", () => {
-    // TODO
+    beforeEach(() => {
+        cy.visit("/favorites");
+      });
+      it("navigates between the favorites page and the movies detail page.", () => {
+        cy.get(".MuiCardActions-root").eq(0).contains("More Info").click();
+        cy.url().should("include", `/movies/${movies[0].id}`);
+      });
   });
   describe("The forward/backward links", () => {
     beforeEach(() => {
