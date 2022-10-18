@@ -66,7 +66,6 @@ describe("Filtering", () => {
         cy.get("#genre-select").click();
         cy.get("li").contains(selectedGenreText).click();
         cy.get("#filled-search").clear().type(searchString); // Enter c in text box
-        cy.get("#genre-select").click();
         cy.get(".MuiCardHeader-content").should(
           "have.length",
           matchingMovies.length
