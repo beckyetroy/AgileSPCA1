@@ -57,6 +57,28 @@ describe("Filtering", () => {
   });
 
   describe("Combined genre and title", () => {
-    // TODO
+    it("only display movies with 'c' in the title within the selected genre", () => {
+        const selectedGenreId = 35;
+        const selectedGenreText = "Comedy";
+        const matchingMoviesGenre = filterByGenre(movies, selectedGenreId);
+        const searchString = "c";
+        const matchingMovies = filterByTitle(matchingMoviesGenre, searchString);
+        cy.get("#genre-select").click();
+        cy.get("li").contains(selectedGenreText).click();
+        cy.get("#filled-search").clear().type(searchString); // Enter c in text box
+        cy.get("#genre-select").click();
+        cy.get(".MuiCardHeader-content").should(
+          "have.length",
+          matchingMovies.length
+        );
+        cy.get(".MuiCardHeader-content").each(($card, index) => {
+          cy.wrap($card).find("p").contains(matchingMovies[index].title);
+        });
+      });
+      it("handles case when there are no matches", () => {
+        const searchString = "xyxxzyyzz";
+        cy.get("#filled-search").clear().type(searchString); // Enter c in text box
+        cy.get(".MuiCardHeader-content").should("have.length", 0);
+      });
   });
 });
