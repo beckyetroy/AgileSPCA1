@@ -1,5 +1,4 @@
 import React from "react";
-import { createRoot } from 'react-dom/client';
 import ReactDOM from 'react-dom'
 import { BrowserRouter, Route, Navigate, Routes } from "react-router-dom";
 import HomePage from "./pages/homePage";
