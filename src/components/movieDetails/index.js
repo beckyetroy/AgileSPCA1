@@ -9,6 +9,9 @@ import Fab from "@mui/material/Fab";
 import Typography from "@mui/material/Typography";
 import Drawer from "@mui/material/Drawer";
 import MovieReviews from "../movieReviews";
+import CardActions from "@mui/material/CardActions";
+import { Link } from "react-router-dom";
+import Button from "@mui/material/Button";
 
 const root = {
     display: "flex",
@@ -70,6 +73,23 @@ const MovieDetails = ({ movie }) => {  // Don't miss this!
             <Chip label={g.name} sx={{...chip}} />
           </li>
         ))}
+      </Paper>
+      <Paper 
+        component="ul" 
+        sx={{...root}}
+      >
+      <CardActions style={{justifyContent:"center"}}>
+        <li>
+          <Link to={`/movies/${movie.id}/cast`} style={{textDecoration:'none'}}>
+          <Button variant="contained" size="medium" style={{backgroundColor:'#cc66ff'}}> View Cast</Button>
+          </Link>
+        </li>
+        <li>
+          <Link to={`/movies/${movie.id}/crew`} style={{textDecoration:'none'}}>
+          <Button variant="contained" size="medium" style={{backgroundColor:'#cc66ff'}}> View Crew</Button>
+          </Link>
+        </li>
+      </CardActions>
       </Paper>
       <Fab
         color="secondary"

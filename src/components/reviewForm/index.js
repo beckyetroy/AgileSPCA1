@@ -1,37 +1,14 @@
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
+import Box from '@mui/material/Box';
+import Rating from '@mui/material/Rating';
 import { useForm, Controller } from "react-hook-form";
 import React, { useState, useContext } from "react";
 import { MoviesContext } from "../../contexts/moviesContext";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
-
-const ratings = [
-  {
-    value: 5,
-    label: "Excellent",
-  },
-  {
-    value: 4,
-    label: "Good",
-  },
-  {
-    value: 3,
-    label: "Average",
-  },
-  {
-    value: 2,
-    label: "Poor",
-  },
-  {
-    value: 0,
-    label: "Terrible",
-  },
-];
 
 const styles = {
   root: {
@@ -70,7 +47,7 @@ const ReviewForm = ({ movie }) => {
     author: "",
     review: "",
     agree: false,
-    rating: "3",
+    rating: 3,
   };
 
   const {
@@ -81,13 +58,12 @@ const ReviewForm = ({ movie }) => {
   } = useForm(defaultValues);
 
   const handleRatingChange = (event) => {
-    setRating(event.target.value);
+    setRating(Number(event.target.value));
   };
 
   const onSubmit = (review) => {
     review.movieId = movie.id;
     review.rating = rating;
-    // console.log(review);
     context.addReview(movie, review);
     setOpen(true); // NEW
   };
@@ -100,7 +76,7 @@ const ReviewForm = ({ movie }) => {
   return (
     <Box component="div" sx={styles.root}>
       <Typography component="h2" variant="h3">
-        Write a review
+        Submit Your Review
       </Typography>
 
       <Snackbar
@@ -180,21 +156,15 @@ const ReviewForm = ({ movie }) => {
           control={control}
           name="rating"
           render={({ field: { onChange, value } }) => (
-            <TextField
-              id="select-rating"
-              select
-              variant="outlined"
-              label="Rating Select"
+            <Rating
+              name="rating"
               value={rating}
+              size="large"
+              sx={{
+                fontSize: "4rem"
+              }}
               onChange={handleRatingChange}
-              helperText="Don't forget your rating"
-            >
-              {ratings.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
+            />
           )}
         />
 
