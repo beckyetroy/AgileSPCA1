@@ -34,7 +34,6 @@ const MoviesContextProvider = (props) => {
       newMustWatch = [...mustWatch];
     }
     setMustWatch(newMustWatch);
-    console.log(newMustWatch);
   };
 
   const removeFromMustWatch = (movie) => {

@@ -87,3 +87,62 @@
       throw error
    });
   };
+
+  export const getTrendingMovies = (time) => {
+    return fetch(
+      `https://api.themoviedb.org/3/trending/movie/${time}?api_key=${process.env.REACT_APP_TMDB_KEY}`
+    ).then( (response) => {
+      if (!response.ok) {
+        throw new Error(response.json().message);
+      }
+      return response.json();
+  
+    })
+    .catch((error) => {
+      throw error
+   });
+  };
+
+  export const getMovieCredits = (args) => {
+    const [, idPart] = args.queryKey;
+    const { id } = idPart;
+    return fetch(
+      `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${process.env.REACT_APP_TMDB_KEY}`
+    )
+    .then((res) => res.json())
+      .then((json) => {
+        return json;
+      });
+  };
+
+  export const getPersonDetails = (args) => {
+    const [, idPart] = args.queryKey;
+    const { id } = idPart;
+    return fetch(
+      `https://api.themoviedb.org/3/person/${id}?api_key=${process.env.REACT_APP_TMDB_KEY}`
+    )
+      .then((res) => res.json())
+      .then((json) => {
+        return json;
+      });
+  };
+
+  export const generateRequestToken = () => {
+    return fetch(
+      `https://api.themoviedb.org/3/authentication/token/new?api_key=${process.env.REACT_APP_TMDB_KEY}`
+    )
+      .then((res) => res.json())
+      .then((json) => {
+        return json;
+      });
+  };
+
+  export const generateSession = () => {
+    return fetch(
+      `https://api.themoviedb.org/3/authentication/session/new?api_key=${process.env.REACT_APP_TMDB_KEY}`
+    )
+      .then((res) => res.json())
+      .then((json) => {
+        return json;
+      });
+  };
