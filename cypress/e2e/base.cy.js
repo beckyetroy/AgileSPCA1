@@ -25,11 +25,32 @@ describe("Base tests", () => {
             cy.get(".MuiCardHeader-root").should("have.length", 7);
         });
 
-        it("displays the correct movie titles", () => {
+        it("displays the 'Filter Movies' card and all relevant filter/sort fields", () => {
+            cy.get(".MuiGrid-root")
+            .eq(0)
+            .within(() => {
+                cy.get("h1").contains("Filter Movies");
+                //Check if Input and Select fields are as expected
+                cy.get("#filled-search").should('have.class',
+                    "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch css-1lfthva-MuiInputBase-input-MuiFilledInput-input");
+                cy.get("#genre-select").should('have.class',
+                    "MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused css-nxo287-MuiInputBase-input-MuiOutlinedInput-input");
+                cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input")
+                //Check if Movies are sorted by popularity by default
+                .contains("Popularity");
+            });
+        })
+
+        it("displays the correct movie titles, sorted by popularity", () => {
+            //Sort movies by popularity
+            var sorted_movies = movies.sort((m1, m2) => (
+                (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
+              ));
+
             cy.get(".MuiCardHeader-content").each(($card, index) => {
-            //Necessary to prevent errors when API returns double spacing.
-            var title = movies[index].title.replace( /\s\s+/g, ' ' );
-            cy.wrap($card).find("p").contains(title);
+                //Necessary to prevent errors when API returns double spacing.
+                var title = sorted_movies[index].title.replace( /\s\s+/g, ' ' );
+                cy.wrap($card).find("p").contains(title);
             });
         });
         });
