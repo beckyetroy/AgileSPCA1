@@ -48,7 +48,7 @@ describe("Base tests", () => {
         beforeEach(() => {
             cy.visit(`/movies/${movies[0].id}`);
         });
-        it(" displays the movie title, overview and genres ", () => {
+        it(" displays the movie title, overview and genres", () => {
             //Necessary to prevent errors when API returns double spacing.
             var title = movie.title.replace( /\s\s+/g, ' ' );
             cy.get("h3").contains(title);
@@ -66,6 +66,29 @@ describe("Base tests", () => {
                 cy.wrap($card).contains(genreChipLabels[index]);
                 });
             });
+        });
+        it(" displays the movie runtime, revenue, vote, and release date", () => {
+            cy.get("ul")
+            .eq(1)
+            .within(() => {
+                cy.get("span").contains(movie.runtime);
+                cy.get("span").contains(movie.revenue.toLocaleString());
+                cy.get("span").contains(movie.vote_average);
+                cy.get("span").contains(movie.release_date);
+            });
+        });
+        it(" displays the production countries and view cast/crew buttons", () => {
+            cy.get("ul")
+            .eq(2)
+            .within(() => {
+                const countryChipLabels = movie.production_countries.map((g) => g.name);
+                countryChipLabels.unshift("Production Countries");
+                cy.get("span").each(($card, index) => {
+                cy.wrap($card).contains(countryChipLabels[index]);
+                });
+            });
+            cy.get("button").contains("View Cast", { matchCase: false });
+            cy.get("button").contains("View Crew", { matchCase: false });
         });
     });
 });
