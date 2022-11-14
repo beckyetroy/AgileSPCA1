@@ -42,16 +42,37 @@ describe("Base tests", () => {
             });
         })
 
-        it("displays the correct movie titles, sorted by popularity", () => {
+        it("displays the correct movie information and sorts movies by popularity", () => {
             //Sort movies by popularity
             var sorted_movies = movies.sort((m1, m2) => (
                 (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
               ));
 
+            //Confirm title is correct
             cy.get(".MuiCardHeader-content").each(($card, index) => {
                 //Necessary to prevent errors when API returns double spacing.
                 var title = sorted_movies[index].title.replace( /\s\s+/g, ' ' );
                 cy.wrap($card).find("p").contains(title);
+            });
+
+            //Confirm Poster is correct
+            cy.get(".MuiCardMedia-root").each(($card, index) => {
+                var poster = "https://image.tmdb.org/t/p/w500/" + sorted_movies[index].poster_path;
+                cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + poster + '");');
+            });
+
+            //Confirm Release Date and Rating are correct
+            cy.get(".MuiCardContent-root").each(($card, index) => {
+                var release = sorted_movies[index].release_date;
+                var rating = sorted_movies[index].vote_average;
+                cy.wrap($card).should('contain', release).and('contain', rating);
+            });
+
+            //Confirm Favourites Button and More Info button are rendered
+            cy.get(".MuiCardActions-root").each(($card, index) => {
+                cy.wrap($card).find('button').should('have.attr', 'aria-label', 'add to favorites');
+                cy.wrap($card).find('a').should('have.attr', 'href', '/movies/' + sorted_movies[index].id)
+                    .and('contain', 'More Info ...');
             });
         });
     });
