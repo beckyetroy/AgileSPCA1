@@ -34,10 +34,10 @@ describe("Base tests", () => {
                 cy.get("h1").contains("Filter Movies");
                 //Check if Input and Select fields are as expected
                 cy.get("#filled-search").should('have.class',
-                    "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch css-1lfthva-MuiInputBase-input-MuiFilledInput-input");
+                    "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
                 cy.get("#genre-select").should('have.class',
-                    "MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused css-nxo287-MuiInputBase-input-MuiOutlinedInput-input");
-                cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input")
+                    "MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused");
+                cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
                 //Check if Movies are sorted by popularity by default
                 .contains("Popularity");
             });
