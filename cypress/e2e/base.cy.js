@@ -14,12 +14,13 @@ describe("Base tests", () => {
             .then((response) => {
             movies = response.results;
             });
-        });
-        beforeEach(() => {
+    });
+    
+    beforeEach(() => {
         cy.visit("/");
-        });
+    });
 
-        describe("The Discover Movies page", () => {
+    describe("The Discover Movies page", () => {
         it("displays the page header and 7 movies on first load", () => {
             cy.get("h3").contains("Discover Movies");
             cy.get(".MuiCardHeader-root").should("have.length", 7);
@@ -53,8 +54,10 @@ describe("Base tests", () => {
                 cy.wrap($card).find("p").contains(title);
             });
         });
-        });
-        describe("The Movie Details page", () => {
+    });
+
+    describe("The Movie Details page", () => {
+
         before(() => {
             cy.request(
             `https://api.themoviedb.org/3/movie/${
@@ -66,9 +69,11 @@ describe("Base tests", () => {
                 movie = movieDetails;
             });
         });
+
         beforeEach(() => {
             cy.visit(`/movies/${movies[0].id}`);
         });
+
         it(" displays the movie title, overview and genres", () => {
             //Necessary to prevent errors when API returns double spacing.
             var title = movie.title.replace( /\s\s+/g, ' ' );
@@ -88,6 +93,7 @@ describe("Base tests", () => {
                 });
             });
         });
+
         it(" displays the movie runtime, revenue, vote, and release date", () => {
             cy.get("ul")
             .eq(1)
@@ -98,6 +104,7 @@ describe("Base tests", () => {
                 cy.get("span").contains(movie.release_date);
             });
         });
+
         it(" displays the production countries and view cast/crew buttons", () => {
             cy.get("ul")
             .eq(2)
