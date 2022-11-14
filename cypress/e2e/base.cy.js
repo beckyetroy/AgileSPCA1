@@ -1,5 +1,6 @@
 let movies; // List of movies from TMDB
-let movie; //
+let movie; // Single Movie
+let movieimgs; // List of Movie Posters for a particular movie
 
 describe("Base tests", () => {
 
@@ -89,6 +90,16 @@ describe("Base tests", () => {
             .then((movieDetails) => {
                 movie = movieDetails;
             });
+
+            cy.request(
+                `https://api.themoviedb.org/3/movie/${
+                    movies[0].id
+                }/images?api_key=${Cypress.env("TMDB_KEY")}`
+                )
+                .its("body")
+                .then((movieImages) => {
+                    movieimgs = movieImages;
+                });
         });
 
         beforeEach(() => {
@@ -110,7 +121,18 @@ describe("Base tests", () => {
                 const genreChipLabels = movie.genres.map((g) => g.name);
                 genreChipLabels.unshift("Genres");
                 cy.get("span").each(($card, index) => {
-                cy.wrap($card).contains(genreChipLabels[index]);
+                    cy.wrap($card).contains(genreChipLabels[index]);
+                });
+            });
+        });
+
+        it(" displays the movie posters in a carousel", () => {
+            cy.get(".MuiGrid-root")
+            .eq(0)
+            .within(() => {
+                var imgPath = movieimgs.posters.map((image) => image.file_path);
+                cy.get("div").find("img").each(($img, index) => {
+                    cy.wrap($img).should('have.attr', 'src', 'https://image.tmdb.org/t/p/w500/' + imgPath[index]);
                 });
             });
         });
@@ -138,6 +160,10 @@ describe("Base tests", () => {
             });
             cy.get("button").contains("View Cast", { matchCase: false });
             cy.get("button").contains("View Crew", { matchCase: false });
+        });
+
+        it(" displays the reviews button", () => {
+            cy.get("button.MuiButtonBase-root.MuiFab-root").contains("Reviews", { matchCase: false });
         });
     });
 });
