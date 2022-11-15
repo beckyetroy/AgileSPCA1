@@ -1,5 +1,4 @@
 let movies;
-let sorted_movies;
 let movie1;
 let movie3;
 
@@ -27,7 +26,7 @@ describe("The favourites feature", () => {
         it("selected movie card shows the red heart", () => {
             cy.get(".MuiCardHeader-root").eq(1).find("svg").should("not.exist");
             cy.get("button[aria-label='add to favorites']").eq(1).click();
-            cy.get(".MuiCardHeader-root").eq(1).find("svg");
+            cy.get(".MuiCardHeader-root").eq(1).find("svg").should('have.attr', 'data-testid', 'FavoriteIcon');
         });
     });
 
