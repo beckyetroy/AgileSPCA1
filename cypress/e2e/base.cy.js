@@ -28,7 +28,9 @@ describe("Base tests", () => {
         });
 
         it("displays the 'Filter Movies' card and all relevant filter/sort fields", () => {
-            cy.get(".MuiGrid-root")
+            cy.get(".MuiGrid-root.MuiGrid-container")
+            .eq(1)
+            .find(".MuiGrid-root.MuiGrid-item")
             .eq(0)
             .within(() => {
                 cy.get("h1").contains("Filter Movies");
@@ -129,6 +131,8 @@ describe("Base tests", () => {
         it(" displays the movie posters in a carousel", () => {
             cy.get(".MuiGrid-root")
             .eq(0)
+            .find(".MuiGrid-root.MuiGrid-item")
+            .eq(0)
             .within(() => {
                 var imgPath = movieimgs.posters.map((image) => image.file_path);
                 cy.get("div").find("img").each(($img, index) => {
@@ -155,7 +159,7 @@ describe("Base tests", () => {
                 const countryChipLabels = movie.production_countries.map((g) => g.name);
                 countryChipLabels.unshift("Production Countries");
                 cy.get("span").each(($card, index) => {
-                cy.wrap($card).contains(countryChipLabels[index]);
+                    cy.wrap($card).contains(countryChipLabels[index]);
                 });
             });
             cy.get("button").contains("View Cast", { matchCase: false });
@@ -166,4 +170,33 @@ describe("Base tests", () => {
             cy.get("button.MuiButtonBase-root.MuiFab-root").contains("Reviews", { matchCase: false });
         });
     });
+
+    describe("The Favorites page", () => {
+        beforeEach(() => {
+            cy.visit("/movies/favorites");
+        });
+
+        it("displays the page header", () => {
+            cy.get("h3").contains("Favorite Movies");
+        });
+
+        it("displays the 'Filter Movies' card and all relevant filter/sort fields", () => {
+            cy.get(".MuiGrid-root.MuiGrid-container")
+            .eq(1)
+            .find(".MuiGrid-root.MuiGrid-item")
+            .eq(0)
+            .within(() => {
+                cy.get("h1").contains("Filter Movies");
+                //Check if Input and Select fields are as expected
+                cy.get("#filled-search").should('have.class',
+                    "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
+                cy.get("#genre-select").should('have.class',
+                    "MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused");
+                cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
+                //Check if Movies are sorted by popularity by default
+                .contains("Popularity");
+            });
+        })
+    });
+
 });
