@@ -272,4 +272,32 @@ describe("Base tests", () => {
             });
         });
     });
+
+    describe("The Must Watch page", () => {
+        beforeEach(() => {
+            cy.visit("/movies/mustwatch");
+        });
+
+        it("displays the page header", () => {
+            cy.get("h3").contains("Your Must-Watch Movies");
+        });
+
+        it("displays the 'Filter Movies' card and all relevant filter/sort fields", () => {
+            cy.get(".MuiGrid-root.MuiGrid-container")
+            .eq(1)
+            .find(".MuiGrid-root.MuiGrid-item")
+            .eq(0)
+            .within(() => {
+                cy.get("h1").contains("Filter Movies");
+                //Check if Input and Select fields are as expected
+                cy.get("#filled-search").should('have.class',
+                    "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
+                cy.get("#genre-select").should('have.class',
+                    "MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused");
+                cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
+                //Check if Movies are sorted by popularity by default
+                .contains("Popularity");
+            });
+        })
+    });
 });
