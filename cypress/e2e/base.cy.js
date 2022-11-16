@@ -1,6 +1,8 @@
 let movies; // List of movies from TMDB
 let movie; // Single Movie
 let movieimgs; // List of Movie Posters for a particular movie
+let cast; // List of cast members for a particular movie
+let crew; //List of crew members for a particular movie
 
 describe("Base tests", () => {
 
@@ -168,6 +170,165 @@ describe("Base tests", () => {
 
         it(" displays the reviews button", () => {
             cy.get("button.MuiButtonBase-root.MuiFab-root").contains("Reviews", { matchCase: false });
+        });
+    });
+
+    describe("The Cast List page", () => {
+
+        before(() => {
+            cy.request(
+                `https://api.themoviedb.org/3/movie/${
+                    movies[0].id
+                }/credits?api_key=${Cypress.env("TMDB_KEY")}`
+                )
+                .its("body")
+                .then((castList) => {
+                    cast = castList.cast;
+                });
+        });
+
+        beforeEach(() => {
+            cy.visit(`/movies/${movies[0].id}/cast`);
+        });
+
+        it("displays the page header and 11 cast members on first load", () => {
+            cy.get("h3").contains("Cast");
+            cy.get(".MuiCardHeader-root").should("have.length", 11);
+        });
+
+        it("displays the 'Search Cast' card and all relevant filter/sort fields", () => {
+            cy.get(".MuiGrid-root.MuiGrid-container")
+            .eq(1)
+            .find(".MuiGrid-root.MuiGrid-item")
+            .eq(0)
+            .within(() => {
+                cy.get("h1").contains("Search Cast");
+                //Check if Input and Select fields are as expected
+                cy.get("#filled-search").eq(0).should('have.class',
+                    "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
+                cy.get(".MuiFormControl-root").eq(0).find('label').contains('By Actor');
+                cy.get("input").eq(1).should('have.class',
+                    "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
+                cy.get(".MuiFormControl-root").eq(1).find('label').contains('By Character');
+                cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
+                //Check if Movies are sorted by popularity by default
+                .contains("Relevance");
+                cy.get(".MuiFormControl-root").eq(2).find('label').contains('Sort By');
+            });
+        });
+
+        it("displays the correct cast information and sorts people by their role significance", () => {
+            //API sorts by role significance by default - no need to sort cast
+            
+            //Confirm Name is correct and links to person page
+            cy.get(".MuiCardHeader-content").each(($card, index) => {
+                //Necessary to prevent errors when API returns double spacing.
+                var name = cast[index].name.replace( /\s\s+/g, ' ' );
+                cy.wrap($card).find("p").find("a").should('contain', name)
+                    .and('have.attr', 'href', '/person/' + cast[index].id);
+            });
+
+            //Confirm Image is correct
+
+            //TODO -- CHECK IF CAST HAS NO IMAGE THAT CORRECT DEFAULT IMAGE SHOWS
+            cy.get(".MuiCardMedia-root").each(($card, index) => {
+                var image = "https://image.tmdb.org/t/p/w500/" + cast[index].profile_path;
+                cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + image + '");');
+            });
+
+            //Confirm Character is correct
+            cy.get(".MuiCardContent-root > p").each(($card, index) => {
+                var character = cast[index].character;
+                cy.wrap($card).should('contain', character);
+            });
+        });
+    });
+
+    describe("The Crew List page", () => {
+
+        before(() => {
+            cy.request(
+                `https://api.themoviedb.org/3/movie/${
+                    movies[0].id
+                }/credits?api_key=${Cypress.env("TMDB_KEY")}`
+                )
+                .its("body")
+                .then((crewList) => {
+                    crew = crewList.crew;
+                });
+        });
+
+        beforeEach(() => {
+            cy.visit(`/movies/${movies[0].id}/crew`);
+        });
+
+        it("displays the page header and 11 crew members on first load", () => {
+            cy.get("h3").contains("Crew");
+            cy.get(".MuiCardHeader-root").should("have.length", 11);
+        });
+
+        it("displays the 'Search Crew' card and all relevant filter/sort fields", () => {
+            cy.get(".MuiGrid-root.MuiGrid-container")
+            .eq(1)
+            .find(".MuiGrid-root.MuiGrid-item")
+            .eq(0)
+            .within(() => {
+                cy.get("h1").contains("Search Crew");
+                //Check if Input and Select fields are as expected
+                cy.get("#filled-search").eq(0).should('have.class',
+                    "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
+                cy.get(".MuiFormControl-root").eq(0).find('label').contains('By Name');
+                cy.get("input").eq(1).should('have.class',
+                    "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
+                cy.get(".MuiFormControl-root").eq(1).find('label').contains('By Job');
+                cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
+                .contains("Default");
+                cy.get(".MuiFormControl-root").eq(2).find('label').contains('Sort By');
+            });
+        });
+
+        it("displays the correct crew information", () => {
+            //Filter Crew List so crew members with multiple jobs are displayed in one person card rather than multiple jobs
+            var seen = {};
+            const fixed_crews = crew.filter(function(entry) {
+                var previous;
+
+                if (seen.hasOwnProperty(entry.id)) {
+                    previous = seen[entry.id];
+                    previous.job = previous.job + ', ' + entry.job;
+                    return false;
+                }
+
+                seen[entry.id] = entry;
+                return true;
+            });;
+
+            //Confirm Name is correct and links to person page
+            cy.get(".MuiCardHeader-content").each(($card, index) => {
+                //Necessary to prevent errors when API returns double spacing.
+                var name = fixed_crews[index].name.replace( /\s\s+/g, ' ' );
+                cy.wrap($card).find("p").find("a").should('contain', name)
+                    .and('have.attr', 'href', '/person/' + fixed_crews[index].id);
+            });
+
+            //Confirm Image is correct
+
+            //TODO -- CHECK IF CREW HAS NO IMAGE THAT CORRECT DEFAULT IMAGE SHOWS
+            // cy.get(".MuiCardMedia-root").each(($card, index) => {
+            //     //Check if crew member has image or one of the expected default images
+            //     if (fixed_crews[index].profile_path) {
+            //         var image = "https://image.tmdb.org/t/p/w500/" + fixed_crews[index].profile_path;
+            //         cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + image + '");');
+            //     }
+            //     else {
+            //     }
+            //     });
+
+            //Confirm Character is correct
+            cy.get(".MuiCardContent-root > p").each(($card, index) => {
+                var job = fixed_crews[index].job;
+                cy.wrap($card).should('contain', job);
+            });
         });
     });
 
