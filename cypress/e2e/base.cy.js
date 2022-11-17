@@ -1,10 +1,12 @@
-import { Male } from "@mui/icons-material";
-
 let movies; // List of movies from TMDB
 let movie; // Single Movie
 let movieimgs; // List of Movie Posters for a particular movie
+let sorted_movies; // List of movies after they've been sorted accordingly
 let cast; // List of cast members for a particular movie
 let crew; //List of crew members for a particular movie
+let castMember; // Single cast member
+let crewMember; // Single crew member
+var seen = {}; //Used for filtering crew list (see crew list page tests)
 
 describe("Base tests", () => {
 
@@ -23,6 +25,9 @@ describe("Base tests", () => {
     
     beforeEach(() => {
         cy.visit("/");
+        sorted_movies = movies.sort((m1, m2) => (
+            (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
+        ));
     });
 
     describe("The Discover Movies page", () => {
@@ -49,33 +54,30 @@ describe("Base tests", () => {
             });
         })
 
-        it("displays the correct movie information and sorts movies by popularity", () => {
-            //Sort movies by popularity
-            var sorted_movies = movies.sort((m1, m2) => (
-                (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
-              ));
-
-            //Confirm title is correct
+        it("displays the correct movie titles", () => {
             cy.get(".MuiCardHeader-content").each(($card, index) => {
                 //Necessary to prevent errors when API returns double spacing.
                 var title = sorted_movies[index].title.replace( /\s\s+/g, ' ' );
                 cy.wrap($card).find("p").contains(title);
             });
+        });
 
-            //Confirm Poster is correct
+        it("displays the correct movie posters", () => {
             cy.get(".MuiCardMedia-root").each(($card, index) => {
                 var poster = "https://image.tmdb.org/t/p/w500/" + sorted_movies[index].poster_path;
                 cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + poster + '");');
             });
+        });
 
-            //Confirm Release Date and Rating are correct
+        it("displays the correct release date and rating", () => {
             cy.get(".MuiCardContent-root").each(($card, index) => {
                 var release = sorted_movies[index].release_date;
                 var rating = sorted_movies[index].vote_average;
                 cy.wrap($card).should('contain', release).and('contain', rating);
             });
+        });
 
-            //Confirm Favourites Button and More Info button are rendered
+        it("displays the 'Add to Favourites' and 'More Info' Buttons", () => {
             cy.get(".MuiCardActions-root").each(($card, index) => {
                 cy.wrap($card).find('button').should('have.attr', 'aria-label', 'add to favorites');
                 cy.wrap($card).find('a').should('have.attr', 'href', '/movies/' + sorted_movies[index].id)
@@ -219,7 +221,7 @@ describe("Base tests", () => {
             });
         });
 
-        it("displays the correct cast information and sorts people by their role significance", () => {
+        it("displays the correct cast names", () => {
             //API sorts by role significance by default - no need to sort cast
             
             //Confirm Name is correct and links to person page
@@ -229,8 +231,9 @@ describe("Base tests", () => {
                 cy.wrap($card).find("p").find("a").should('contain', name)
                     .and('have.attr', 'href', '/person/' + cast[index].id);
             });
+        });
 
-            //Confirm Image is correct
+        it("displays the correct cast images", () => {
             cy.get(".MuiCardMedia-root").each(($card, index) => {
                 //Check if cast member has image or one of the expected default images
                 if (cast[index].profile_path) {
@@ -250,8 +253,9 @@ describe("Base tests", () => {
                     });
                 }
             });
+        });
 
-            //Confirm Character is correct
+        it("displays the correct character names", () => {
             cy.get(".MuiCardContent-root > p").each(($card, index) => {
                 var character = cast[index].character;
                 cy.wrap($card).should('contain', character);
@@ -269,7 +273,19 @@ describe("Base tests", () => {
                 )
                 .its("body")
                 .then((crewList) => {
-                    crew = crewList.crew;
+                    //Filter Crew List so crew members with multiple jobs are displayed in one person card rather than multiple jobs
+                    crew = crewList.crew.filter(function(entry) {
+                        var previous;
+        
+                        if (seen.hasOwnProperty(entry.id)) {
+                            previous = seen[entry.id];
+                            previous.job = previous.job + ', ' + entry.job;
+                            return false;
+                        }
+        
+                        seen[entry.id] = entry;
+                        return true;
+                    });;
                 });
         });
 
@@ -302,39 +318,24 @@ describe("Base tests", () => {
             });
         });
 
-        it("displays the correct crew information", () => {
-            //Filter Crew List so crew members with multiple jobs are displayed in one person card rather than multiple jobs
-            var seen = {};
-            const fixed_crews = crew.filter(function(entry) {
-                var previous;
-
-                if (seen.hasOwnProperty(entry.id)) {
-                    previous = seen[entry.id];
-                    previous.job = previous.job + ', ' + entry.job;
-                    return false;
-                }
-
-                seen[entry.id] = entry;
-                return true;
-            });;
-
-            //Confirm Name is correct and links to person page
+        it("displays the correct crew names and links to their details page", () => {
             cy.get(".MuiCardHeader-content").each(($card, index) => {
                 //Necessary to prevent errors when API returns double spacing.
-                var name = fixed_crews[index].name.replace( /\s\s+/g, ' ' );
+                var name = crew[index].name.replace( /\s\s+/g, ' ' );
                 cy.wrap($card).find("p").find("a").should('contain', name)
-                    .and('have.attr', 'href', '/person/' + fixed_crews[index].id);
+                    .and('have.attr', 'href', '/person/' + crew[index].id);
             });
+        });
 
-            //Confirm Image is correct
+        it("displays the correct crew images", () => {
             cy.get(".MuiCardMedia-root").each(($card, index) => {
                 //Check if crew member has image or one of the expected default images
-                if (fixed_crews[index].profile_path) {
-                    var image = "https://image.tmdb.org/t/p/w500/" + fixed_crews[index].profile_path;
+                if (crew[index].profile_path) {
+                    var image = "https://image.tmdb.org/t/p/w500/" + crew[index].profile_path;
                     cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + image + '");');
                 }
                 //If female, check crew member has female default image
-                else if (fixed_crews[index].gender === 1){
+                else if (crew[index].gender === 1){
                     cy.fixture('../../src/images/female-person-placeholder.jpg').then((female) => {
                         cy.wrap($card).should('have.attr', 'style', 'background-image: url("data:image/jpeg;base64,' + female + '");');
                     });
@@ -346,11 +347,224 @@ describe("Base tests", () => {
                     });
                 }
             });
+        });
 
-            //Confirm Character is correct
+        it("displays the correct job(s) for each crew member", () => {
             cy.get(".MuiCardContent-root > p").each(($card, index) => {
-                var job = fixed_crews[index].job;
+                var job = crew[index].job;
                 cy.wrap($card).should('contain', job);
+            });
+        });
+    });
+
+    describe("The Person Details page", () => {
+
+        before(() => {
+            cy.request(
+            `https://api.themoviedb.org/3/person/${
+                cast[0].id
+            }?api_key=${Cypress.env("TMDB_KEY")}`
+            )
+            .its("body")
+            .then((castDetails) => {
+                castMember = castDetails;
+            });
+
+            cy.request(
+            `https://api.themoviedb.org/3/person/${
+                crew[0].id
+            }?api_key=${Cypress.env("TMDB_KEY")}`
+            )
+            .its("body")
+            .then((crewDetails) => {
+                crewMember = crewDetails;
+            });
+        });
+
+        describe("Cast Version", () => {
+
+            beforeEach(() => {
+                cy.visit(`/person/${cast[0].id}`);
+            });
+
+            it("displays the cast member's name as the header", () => {
+                var name = castMember.name.replace( /\s\s+/g, ' ' );
+                cy.get("h3").contains(name);
+            });
+
+            it("displays the cast member's biography", () => {
+                //Check if cast member displays their biography or, if no biography present,
+                //displays the default 'Biography unavailable' message
+                if (castMember.biography) {
+                    var biography = castMember.name.replace( /\s\s+/g, ' ' );
+                    cy.get("h3").eq(1).contains("Biography");
+                    cy.get("p").contains(biography);
+                }
+                else {
+                    var name = castMember.name.replace( /\s\s+/g, ' ' );
+                    cy.get("h3").eq(1).contains("Biography for " + name + " unavailable");
+                }
+            });
+
+            it("displays the cast member's image", () => {
+                if (castMember.profile_path) {
+                    var image = "https://image.tmdb.org/t/p/w500/" + castMember.profile_path;
+                    cy.get('img').should('have.attr', 'src', image);
+                }
+                //If female, check cast member has female default image
+                else if (castMember.gender === 1){
+                    cy.fixture('../../src/images/female-person-placeholder.jpg').then((female) => {
+                        cy.get('img').should('have.attr', 'src', 'data:image/jpeg;base64,' + female + '");');
+                    });
+                }
+                //If male or other, check cast member has male default image
+                else {
+                    cy.fixture('../../src/images/male-person-placeholder.jpg').then((male) => {
+                        cy.get('img').should('have.attr', 'src', 'data:image/jpeg;base64,' + male + '");');
+                    });
+                }
+            });
+
+            it("displays the correct DOB and age", () => {
+                cy.get("ul").eq(0).within(() => {
+                    //Check if values are non-empty. If empty, appropriate defaults should be displayed
+                    if (castMember.birthday) cy.get("span").contains("Born: " + castMember.birthday);
+                    else cy.get("span").contains("Born: N/A");
+
+                    if (castMember.birthday) {
+                        //Calculate the person's age
+                        var today = new Date();
+                        var birthDate = new Date(castMember.birthday);
+                        var age = today.getFullYear() - birthDate.getFullYear();
+                        var m = today.getMonth() - birthDate.getMonth();
+                        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                            age--;
+                        }
+                        cy.get("span").contains("Age: " + age);
+                    }
+                    else cy.get("span").contains("Age: Unknown");
+                });
+
+
+            });
+
+            it("displays the correct gender, place of birth, and area known for", () => {
+                cy.get("ul").eq(0).within(() => {
+                    //Check if values are non-empty. If empty, appropriate defaults should be displayed
+                    //Female - icon and pink background
+                    if (castMember.gender === 1) {
+                        cy.get("span").contains("Female");
+                        cy.get("svg").should('have.attr', 'data-testid', 'FemaleIcon')
+                            .parent().should('have.attr', 'style', 'background-color: rgb(255, 204, 255); margin: 0.25em;');
+                    }
+                    //Male - icon and blue background
+                    else if (castMember.gender === 2) {
+                        cy.get("span").contains("Male");
+                        cy.get("svg").should('have.attr', 'data-testid', 'MaleIcon')
+                        .parent().should('have.attr', 'style', 'background-color: rgb(153, 204, 255); margin: 0.25em;');
+                    }
+                    //Unknown or other
+                    else cy.get("span").contains("Gender: N/B or Unknown");
+
+                    if (castMember.place_of_birth) cy.get("span").contains("From: " + castMember.place_of_birth);
+                    else cy.get("span").contains("From: N/A");
+                    cy.get("svg").eq(1).should('have.attr', 'data-testid', 'PlaceIcon');
+
+                    cy.get("span").contains("Known for: " + castMember.known_for_department);
+                });
+            });
+        });
+
+        describe("Crew Version", () => {
+            beforeEach(() => {
+                cy.visit(`/person/${crew[0].id}`);
+            });
+
+            it("displays the crew member's name as the header", () => {
+                var name = crewMember.name.replace( /\s\s+/g, ' ' );
+                cy.get("h3").contains(name);
+            });
+
+            it("displays the crew member's biography", () => {
+                //Check if crew member displays their biography or, if no biography present,
+                //displays the default 'Biography unavailable' message
+                if (crewMember.biography) {
+                    var biography = crewMember.name.replace( /\s\s+/g, ' ' );
+                    cy.get("h3").eq(1).contains("Biography");
+                    cy.get("p").contains(biography);
+                }
+                else {
+                    var name = crewMember.name.replace( /\s\s+/g, ' ' );
+                    cy.get("h3").eq(1).contains("Biography for " + name + " unavailable");
+                }
+            });
+
+            it("displays the crew member's image", () => {
+                if (crewMember.profile_path) {
+                    var image = "https://image.tmdb.org/t/p/w500/" + crewMember.profile_path;
+                    cy.get('img').should('have.attr', 'src', image);
+                }
+                //If female, check crew member has female default image
+                else if (crewMember.gender === 1){
+                    cy.fixture('../../src/images/female-person-placeholder.jpg').then((female) => {
+                        cy.get('img').should('have.attr', 'src', 'data:image/jpeg;base64,' + female + '");');
+                    });
+                }
+                //If male or other, check crew member has male default image
+                else {
+                    cy.fixture('../../src/images/male-person-placeholder.jpg').then((male) => {
+                        cy.get('img').should('have.attr', 'src', 'data:image/jpeg;base64,' + male + '");');
+                    });
+                }
+            });
+
+            it("displays the correct DOB and age", () => {
+                cy.get("ul").eq(0).within(() => {
+                    //Check if values are non-empty. If empty, appropriate defaults should be displayed
+                    if (crewMember.birthday) cy.get("span").contains("Born: " + crewMember.birthday);
+                    else cy.get("span").contains("Born: N/A");
+
+                    if (crewMember.birthday) {
+                        //Calculate the person's age
+                        var today = new Date();
+                        var birthDate = new Date(crewMember.birthday);
+                        var age = today.getFullYear() - birthDate.getFullYear();
+                        var m = today.getMonth() - birthDate.getMonth();
+                        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                            age--;
+                        }
+                        cy.get("span").contains("Age: " + age);
+                    }
+                    else cy.get("span").contains("Age: Unknown");
+                });
+
+
+            });
+
+            it("displays the correct gender, place of birth, and area known for", () => {
+                cy.get("ul").eq(0).within(() => {
+                    //Check if values are non-empty. If empty, appropriate defaults should be displayed
+                    //Female - icon and pink background
+                    if (crewMember.gender === 1) {
+                        cy.get("span").contains("Female");
+                        cy.get("svg").should('have.attr', 'data-testid', 'FemaleIcon')
+                            .parent().should('have.attr', 'style', 'background-color: rgb(255, 204, 255); margin: 0.25em;');
+                    }
+                    //Male - icon and blue background
+                    else if (crewMember.gender === 2) {
+                        cy.get("span").contains("Male");
+                        cy.get("svg").should('have.attr', 'data-testid', 'MaleIcon')
+                        .parent().should('have.attr', 'style', 'background-color: rgb(153, 204, 255); margin: 0.25em;');
+                    }
+                    //Unknown or other
+                    else cy.get("span").contains("Gender: N/B or Unknown");
+
+                    if (crewMember.place_of_birth) cy.get("span").contains("From: " + crewMember.place_of_birth);
+                    else cy.get("span").contains("From: N/A");
+                    cy.get("svg").eq(1).should('have.attr', 'data-testid', 'PlaceIcon');
+
+                    cy.get("span").contains("Known for: " + crewMember.known_for_department);
+                });
             });
         });
     });
@@ -397,6 +611,9 @@ describe("Base tests", () => {
 
         beforeEach(() => {
             cy.visit("/movies/upcoming");
+            sorted_movies = movies.sort((m1, m2) => (
+                (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
+            ));
         });
 
         it("displays the page header and 7 movies on first load", () => {
@@ -422,33 +639,30 @@ describe("Base tests", () => {
             });
         });
 
-        it("displays the correct movie information and sorts movies by popularity", () => {
-            //Sort movies by popularity
-            var sorted_movies = movies.sort((m1, m2) => (
-                (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
-              ));
-
-            //Confirm title is correct
+        it("displays the correct movie titles", () => {
             cy.get(".MuiCardHeader-content").each(($card, index) => {
                 //Necessary to prevent errors when API returns double spacing.
                 var title = sorted_movies[index].title.replace( /\s\s+/g, ' ' );
                 cy.wrap($card).find("p").contains(title);
             });
+        });
 
-            //Confirm Poster is correct
+        it("displays the correct movie posters", () => {
             cy.get(".MuiCardMedia-root").each(($card, index) => {
                 var poster = "https://image.tmdb.org/t/p/w500/" + sorted_movies[index].poster_path;
                 cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + poster + '");');
             });
+        });
 
-            //Confirm Release Date and Rating are correct
+        it("displays the correct release dates and ratings", () => {
             cy.get(".MuiCardContent-root").each(($card, index) => {
                 var release = sorted_movies[index].release_date;
                 var rating = sorted_movies[index].vote_average;
                 cy.wrap($card).should('contain', release).and('contain', rating);
             });
+        });
 
-            //Confirm Must Watch Button and More Info button are rendered
+        it("displays the 'Add to Must Watch' and 'More Info' buttons", () => {
             cy.get(".MuiCardActions-root").each(($card, index) => {
                 cy.wrap($card).find('button').should('have.attr', 'aria-label', 'add to must watch');
                 cy.wrap($card).find('a').should('have.attr', 'href', '/movies/' + sorted_movies[index].id)
@@ -498,6 +712,9 @@ describe("Base tests", () => {
 
         beforeEach(() => {
             cy.visit("/movies/trending/week");
+            sorted_movies = movies.sort((m1, m2) => (
+                (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
+              ));
         });
 
         it("displays the page header", () => {
@@ -525,33 +742,30 @@ describe("Base tests", () => {
             });
         });
 
-        it("displays the correct movie information and sorts movies by popularity", () => {
-            //Sort movies by popularity
-            var sorted_movies = movies.sort((m1, m2) => (
-                (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
-              ));
-
-            //Confirm title is correct
+        it("displays the correct movie titles", () => {
             cy.get(".MuiCardHeader-content").each(($card, index) => {
                 //Necessary to prevent errors when API returns double spacing.
                 var title = sorted_movies[index].title.replace( /\s\s+/g, ' ' );
                 cy.wrap($card).find("p").contains(title);
             });
+        });
 
-            //Confirm Poster is correct
+        it("displays the correct movie posters", () => {
             cy.get(".MuiCardMedia-root").each(($card, index) => {
                 var poster = "https://image.tmdb.org/t/p/w500/" + sorted_movies[index].poster_path;
                 cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + poster + '");');
             });
+        });
 
-            //Confirm Release Date and Rating are correct
+        it("displays the correct release dates and ratings", () => {
             cy.get(".MuiCardContent-root").each(($card, index) => {
                 var release = sorted_movies[index].release_date;
                 var rating = sorted_movies[index].vote_average;
                 cy.wrap($card).should('contain', release).and('contain', rating);
             });
+        });
 
-            //Confirm Favourites Button and More Info button are rendered
+        it("displays the 'Add to Favourites' and 'More Info' buttons", () => {
             cy.get(".MuiCardActions-root").each(($card, index) => {
                 cy.wrap($card).find('button').should('have.attr', 'aria-label', 'add to favorites');
                 cy.wrap($card).find('a').should('have.attr', 'href', '/movies/' + sorted_movies[index].id)
