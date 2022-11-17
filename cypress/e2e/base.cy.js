@@ -1,3 +1,5 @@
+import { Male } from "@mui/icons-material";
+
 let movies; // List of movies from TMDB
 let movie; // Single Movie
 let movieimgs; // List of Movie Posters for a particular movie
@@ -229,11 +231,24 @@ describe("Base tests", () => {
             });
 
             //Confirm Image is correct
-
-            //TODO -- CHECK IF CAST HAS NO IMAGE THAT CORRECT DEFAULT IMAGE SHOWS
             cy.get(".MuiCardMedia-root").each(($card, index) => {
-                var image = "https://image.tmdb.org/t/p/w500/" + cast[index].profile_path;
-                cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + image + '");');
+                //Check if cast member has image or one of the expected default images
+                if (cast[index].profile_path) {
+                    var image = "https://image.tmdb.org/t/p/w500/" + cast[index].profile_path;
+                    cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + image + '");');
+                }
+                //If female, check cast member has female default image
+                else if (cast[index].gender === 1){
+                    cy.fixture('../../src/images/female-person-placeholder.jpg').then((female) => {
+                        cy.wrap($card).should('have.attr', 'style', 'background-image: url("data:image/jpeg;base64,' + female + '");');
+                    });
+                }
+                //If male or other, check cast member has male default image
+                else {
+                    cy.fixture('../../src/images/male-person-placeholder.jpg').then((male) => {
+                        cy.wrap($card).should('have.attr', 'style', 'background-image: url("data:image/jpeg;base64,' + male + '");');
+                    });
+                }
             });
 
             //Confirm Character is correct
@@ -312,17 +327,25 @@ describe("Base tests", () => {
             });
 
             //Confirm Image is correct
-
-            //TODO -- CHECK IF CREW HAS NO IMAGE THAT CORRECT DEFAULT IMAGE SHOWS
-            // cy.get(".MuiCardMedia-root").each(($card, index) => {
-            //     //Check if crew member has image or one of the expected default images
-            //     if (fixed_crews[index].profile_path) {
-            //         var image = "https://image.tmdb.org/t/p/w500/" + fixed_crews[index].profile_path;
-            //         cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + image + '");');
-            //     }
-            //     else {
-            //     }
-            //     });
+            cy.get(".MuiCardMedia-root").each(($card, index) => {
+                //Check if crew member has image or one of the expected default images
+                if (fixed_crews[index].profile_path) {
+                    var image = "https://image.tmdb.org/t/p/w500/" + fixed_crews[index].profile_path;
+                    cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + image + '");');
+                }
+                //If female, check crew member has female default image
+                else if (fixed_crews[index].gender === 1){
+                    cy.fixture('../../src/images/female-person-placeholder.jpg').then((female) => {
+                        cy.wrap($card).should('have.attr', 'style', 'background-image: url("data:image/jpeg;base64,' + female + '");');
+                    });
+                }
+                //If male or other, check crew member has male default image
+                else {
+                    cy.fixture('../../src/images/male-person-placeholder.jpg').then((male) => {
+                        cy.wrap($card).should('have.attr', 'style', 'background-image: url("data:image/jpeg;base64,' + male + '");');
+                    });
+                }
+            });
 
             //Confirm Character is correct
             cy.get(".MuiCardContent-root > p").each(($card, index) => {
