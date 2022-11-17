@@ -4,6 +4,8 @@ let movieimgs; // List of Movie Posters for a particular movie
 let sorted_movies; // List of movies after they've been sorted accordingly
 let cast; // List of cast members for a particular movie
 let crew; //List of crew members for a particular movie
+let castMember; // Single cast member
+let crewMember; // Single crew member
 var seen = {}; //Used for filtering crew list (see crew list page tests)
 
 describe("Base tests", () => {
@@ -351,6 +353,218 @@ describe("Base tests", () => {
             cy.get(".MuiCardContent-root > p").each(($card, index) => {
                 var job = crew[index].job;
                 cy.wrap($card).should('contain', job);
+            });
+        });
+    });
+
+    describe("The Person Details page", () => {
+
+        before(() => {
+            cy.request(
+            `https://api.themoviedb.org/3/person/${
+                cast[0].id
+            }?api_key=${Cypress.env("TMDB_KEY")}`
+            )
+            .its("body")
+            .then((castDetails) => {
+                castMember = castDetails;
+            });
+
+            cy.request(
+            `https://api.themoviedb.org/3/person/${
+                crew[0].id
+            }?api_key=${Cypress.env("TMDB_KEY")}`
+            )
+            .its("body")
+            .then((crewDetails) => {
+                crewMember = crewDetails;
+            });
+        });
+
+        describe("Cast Version", () => {
+
+            beforeEach(() => {
+                cy.visit(`/person/${cast[0].id}`);
+            });
+
+            it("displays the cast member's name as the header", () => {
+                var name = castMember.name.replace( /\s\s+/g, ' ' );
+                cy.get("h3").contains(name);
+            });
+
+            it("displays the cast member's biography", () => {
+                //Check if cast member displays their biography or, if no biography present,
+                //displays the default 'Biography unavailable' message
+                if (castMember.biography) {
+                    var biography = castMember.name.replace( /\s\s+/g, ' ' );
+                    cy.get("h3").eq(1).contains("Biography");
+                    cy.get("p").contains(biography);
+                }
+                else {
+                    var name = castMember.name.replace( /\s\s+/g, ' ' );
+                    cy.get("h3").eq(1).contains("Biography for " + name + " unavailable");
+                }
+            });
+
+            it("displays the cast member's image", () => {
+                if (castMember.profile_path) {
+                    var image = "https://image.tmdb.org/t/p/w500/" + castMember.profile_path;
+                    cy.get('img').should('have.attr', 'src', image);
+                }
+                //If female, check cast member has female default image
+                else if (castMember.gender === 1){
+                    cy.fixture('../../src/images/female-person-placeholder.jpg').then((female) => {
+                        cy.get('img').should('have.attr', 'src', 'data:image/jpeg;base64,' + female + '");');
+                    });
+                }
+                //If male or other, check cast member has male default image
+                else {
+                    cy.fixture('../../src/images/male-person-placeholder.jpg').then((male) => {
+                        cy.get('img').should('have.attr', 'src', 'data:image/jpeg;base64,' + male + '");');
+                    });
+                }
+            });
+
+            it("displays the correct DOB and age", () => {
+                cy.get("ul").eq(0).within(() => {
+                    //Check if values are non-empty. If empty, appropriate defaults should be displayed
+                    if (castMember.birthday) cy.get("span").contains("Born: " + castMember.birthday);
+                    else cy.get("span").contains("Born: N/A");
+
+                    if (castMember.birthday) {
+                        //Calculate the person's age
+                        var today = new Date();
+                        var birthDate = new Date(castMember.birthday);
+                        var age = today.getFullYear() - birthDate.getFullYear();
+                        var m = today.getMonth() - birthDate.getMonth();
+                        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                            age--;
+                        }
+                        cy.get("span").contains("Age: " + age);
+                    }
+                    else cy.get("span").contains("Age: Unknown");
+                });
+
+
+            });
+
+            it("displays the correct gender, place of birth, and area known for", () => {
+                cy.get("ul").eq(0).within(() => {
+                    //Check if values are non-empty. If empty, appropriate defaults should be displayed
+                    //Female - icon and pink background
+                    if (castMember.gender === 1) {
+                        cy.get("span").contains("Female");
+                        cy.get("svg").should('have.attr', 'data-testid', 'FemaleIcon')
+                            .parent().should('have.attr', 'style', 'background-color: rgb(255, 204, 255); margin: 0.25em;');
+                    }
+                    //Male - icon and blue background
+                    else if (castMember.gender === 2) {
+                        cy.get("span").contains("Male");
+                        cy.get("svg").should('have.attr', 'data-testid', 'MaleIcon')
+                        .parent().should('have.attr', 'style', 'background-color: rgb(153, 204, 255); margin: 0.25em;');
+                    }
+                    //Unknown or other
+                    else cy.get("span").contains("Gender: N/B or Unknown");
+
+                    if (castMember.place_of_birth) cy.get("span").contains("From: " + castMember.place_of_birth);
+                    else cy.get("span").contains("From: N/A");
+                    cy.get("svg").eq(1).should('have.attr', 'data-testid', 'PlaceIcon');
+
+                    cy.get("span").contains("Known for: " + castMember.known_for_department);
+                });
+            });
+        });
+
+        describe("Crew Version", () => {
+            beforeEach(() => {
+                cy.visit(`/person/${crew[0].id}`);
+            });
+
+            it("displays the crew member's name as the header", () => {
+                var name = crewMember.name.replace( /\s\s+/g, ' ' );
+                cy.get("h3").contains(name);
+            });
+
+            it("displays the crew member's biography", () => {
+                //Check if crew member displays their biography or, if no biography present,
+                //displays the default 'Biography unavailable' message
+                if (crewMember.biography) {
+                    var biography = crewMember.name.replace( /\s\s+/g, ' ' );
+                    cy.get("h3").eq(1).contains("Biography");
+                    cy.get("p").contains(biography);
+                }
+                else {
+                    var name = crewMember.name.replace( /\s\s+/g, ' ' );
+                    cy.get("h3").eq(1).contains("Biography for " + name + " unavailable");
+                }
+            });
+
+            it("displays the crew member's image", () => {
+                if (crewMember.profile_path) {
+                    var image = "https://image.tmdb.org/t/p/w500/" + crewMember.profile_path;
+                    cy.get('img').should('have.attr', 'src', image);
+                }
+                //If female, check crew member has female default image
+                else if (crewMember.gender === 1){
+                    cy.fixture('../../src/images/female-person-placeholder.jpg').then((female) => {
+                        cy.get('img').should('have.attr', 'src', 'data:image/jpeg;base64,' + female + '");');
+                    });
+                }
+                //If male or other, check crew member has male default image
+                else {
+                    cy.fixture('../../src/images/male-person-placeholder.jpg').then((male) => {
+                        cy.get('img').should('have.attr', 'src', 'data:image/jpeg;base64,' + male + '");');
+                    });
+                }
+            });
+
+            it("displays the correct DOB and age", () => {
+                cy.get("ul").eq(0).within(() => {
+                    //Check if values are non-empty. If empty, appropriate defaults should be displayed
+                    if (crewMember.birthday) cy.get("span").contains("Born: " + crewMember.birthday);
+                    else cy.get("span").contains("Born: N/A");
+
+                    if (crewMember.birthday) {
+                        //Calculate the person's age
+                        var today = new Date();
+                        var birthDate = new Date(crewMember.birthday);
+                        var age = today.getFullYear() - birthDate.getFullYear();
+                        var m = today.getMonth() - birthDate.getMonth();
+                        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                            age--;
+                        }
+                        cy.get("span").contains("Age: " + age);
+                    }
+                    else cy.get("span").contains("Age: Unknown");
+                });
+
+
+            });
+
+            it("displays the correct gender, place of birth, and area known for", () => {
+                cy.get("ul").eq(0).within(() => {
+                    //Check if values are non-empty. If empty, appropriate defaults should be displayed
+                    //Female - icon and pink background
+                    if (crewMember.gender === 1) {
+                        cy.get("span").contains("Female");
+                        cy.get("svg").should('have.attr', 'data-testid', 'FemaleIcon')
+                            .parent().should('have.attr', 'style', 'background-color: rgb(255, 204, 255); margin: 0.25em;');
+                    }
+                    //Male - icon and blue background
+                    else if (crewMember.gender === 2) {
+                        cy.get("span").contains("Male");
+                        cy.get("svg").should('have.attr', 'data-testid', 'MaleIcon')
+                        .parent().should('have.attr', 'style', 'background-color: rgb(153, 204, 255); margin: 0.25em;');
+                    }
+                    //Unknown or other
+                    else cy.get("span").contains("Gender: N/B or Unknown");
+
+                    if (crewMember.place_of_birth) cy.get("span").contains("From: " + crewMember.place_of_birth);
+                    else cy.get("span").contains("From: N/A");
+                    cy.get("svg").eq(1).should('have.attr', 'data-testid', 'PlaceIcon');
+
+                    cy.get("span").contains("Known for: " + crewMember.known_for_department);
+                });
             });
         });
     });
