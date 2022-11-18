@@ -45,74 +45,76 @@ describe("The must watch feature", () => {
         //The following tests need at least one of the 20 movies on the discover movies page to feature
         //in the upcoming movies page, hence the test code is wrapped in if statements
         //If no matching movies are found, tests pass also
-        it("selected movie card shows the heart icon if movie is already added to favourites", () => {
-            if (matchingMovies[0]) {
-                //Favourite a Movie
-                cy.get("button").contains("Home").click();
-                //Search 3 pages of movies until first matching one is found
-                for (i = 0; i < 2; i++) {
-                    if (cy.get(".MuiGrid-root.MuiGrid-item").contains(matchingMovies[0].title)) {
-                        cy.get(".MuiGrid-root.MuiGrid-item").contains(matchingMovies[0].title)
+        describe("Must watch combined with favourites", () => {
+            it("selected movie card shows the heart icon if movie is already added to favourites", () => {
+                if (matchingMovies[0]) {
+                    //Favourite a Movie
+                    cy.get("button").contains("Home").click();
+                    //Search 3 pages of movies until first matching one is found
+                    for (i = 0; i < 2; i++) {
+                        if (cy.get(".MuiGrid-root.MuiGrid-item").contains(matchingMovies[0].title)) {
+                            cy.get(".MuiGrid-root.MuiGrid-item").contains(matchingMovies[0].title)
+                            .parentsUntil(".MuiGrid-root.MuiGrid-item")
+                            .find("button[aria-label='add to favorites']").click();
+                            break;
+                        }
+                        else {
+                            i += 1;
+                        }
+                    }
+                    cy.get(".MuiCardHeader-root").contains(matchingMovies[0].title)
+                        .parentsUntil(".MuiPaper-root").find("svg").should('have.attr', 'data-testid', 'FavoriteIcon');
+
+                    //Add movie to must watch
+                    cy.get("button").contains("Upcoming").click();
+                    cy.get(".MuiGrid-root.MuiGrid-item").contains(matchingMovies[0].title)
+                        .parentsUntil(".MuiGrid-root.MuiGrid-item")
+                        .find("button[aria-label='add to must watch']").click();
+                    cy.get(".MuiCardHeader-root").contains(matchingMovies[0].title)
+                        .parentsUntil(".MuiPaper-root").find("svg").should('have.attr', 'data-testid', 'FavoriteIcon');
+                } else {}
+            });
+
+            it("selected movie card shows the playlist icon first, but is replaced by heart icon when added to favourites", () => {
+                if (matchingMovies[0]) {
+                    //Add movie to must watch
+                    cy.get(".MuiGrid-root.MuiGrid-item").contains(matchingMovies[0].title)
+                        .parentsUntil(".MuiGrid-root.MuiGrid-item")
+                        .find("button[aria-label='add to must watch']").click();
+                    cy.get(".MuiCardHeader-root").contains(matchingMovies[0].title)
+                        .parentsUntil(".MuiPaper-root").find("svg").should('have.attr', 'data-testid', 'PlaylistAddIcon');
+
+                    //Favourite a Movie
+                    cy.visit("/");
+                    cy.get(".MuiGrid-root.MuiGrid-item").contains(matchingMovies[0].title)
                         .parentsUntil(".MuiGrid-root.MuiGrid-item")
                         .find("button[aria-label='add to favorites']").click();
-                        break;
-                    }
-                    else {
-                        i += 1;
-                    }
-                }
-                cy.get(".MuiCardHeader-root").contains(matchingMovies[0].title)
-                    .parentsUntil(".MuiPaper-root").find("svg").should('have.attr', 'data-testid', 'FavoriteIcon');
+                    cy.get(".MuiCardHeader-root").contains(matchingMovies[0].title)
+                        .parentsUntil(".MuiPaper-root").find("svg").should('have.attr', 'data-testid', 'FavoriteIcon');
+                } else {}
+            });
 
-                //Add movie to must watch
-                cy.get("button").contains("Upcoming").click();
-                cy.get(".MuiGrid-root.MuiGrid-item").contains(matchingMovies[0].title)
-                    .parentsUntil(".MuiGrid-root.MuiGrid-item")
-                    .find("button[aria-label='add to must watch']").click();
-                cy.get(".MuiCardHeader-root").contains(matchingMovies[0].title)
-                    .parentsUntil(".MuiPaper-root").find("svg").should('have.attr', 'data-testid', 'FavoriteIcon');
-            } else {}
-        });
+            it("selected movie cards that are also favourites appear in both the favourites page and the must watch page", () => {
+                if (matchingMovies[0]) {
+                    //Add movie to must watch
+                    cy.get(".MuiGrid-root.MuiGrid-item").contains(matchingMovies[0].title)
+                        .parentsUntil(".MuiGrid-root.MuiGrid-item")
+                        .find("button[aria-label='add to must watch']").click();
 
-        it("selected movie card shows the playlist icon first, but is replaced by heart icon when added to favourites", () => {
-            if (matchingMovies[0]) {
-                //Add movie to must watch
-                cy.get(".MuiGrid-root.MuiGrid-item").contains(matchingMovies[0].title)
-                    .parentsUntil(".MuiGrid-root.MuiGrid-item")
-                    .find("button[aria-label='add to must watch']").click();
-                cy.get(".MuiCardHeader-root").contains(matchingMovies[0].title)
-                    .parentsUntil(".MuiPaper-root").find("svg").should('have.attr', 'data-testid', 'PlaylistAddIcon');
+                    //Favourite the same movie
+                    cy.get("button").contains("Home").click();
+                    cy.get(".MuiGrid-root.MuiGrid-item").contains(matchingMovies[0].title)
+                        .parentsUntil(".MuiGrid-root.MuiGrid-item")
+                        .find("button[aria-label='add to favorites']").click();
 
-                //Favourite a Movie
-                cy.visit("/");
-                cy.get(".MuiGrid-root.MuiGrid-item").contains(matchingMovies[0].title)
-                    .parentsUntil(".MuiGrid-root.MuiGrid-item")
-                    .find("button[aria-label='add to favorites']").click();
-                cy.get(".MuiCardHeader-root").contains(matchingMovies[0].title)
-                    .parentsUntil(".MuiPaper-root").find("svg").should('have.attr', 'data-testid', 'FavoriteIcon');
-            } else {}
-        });
-
-        it("selected movie cards that are also favourites appear in both the favourites page and the must watch page", () => {
-            if (matchingMovies[0]) {
-                //Add movie to must watch
-                cy.get(".MuiGrid-root.MuiGrid-item").contains(matchingMovies[0].title)
-                    .parentsUntil(".MuiGrid-root.MuiGrid-item")
-                    .find("button[aria-label='add to must watch']").click();
-
-                //Favourite the same movie
-                cy.get("button").contains("Home").click();
-                cy.get(".MuiGrid-root.MuiGrid-item").contains(matchingMovies[0].title)
-                    .parentsUntil(".MuiGrid-root.MuiGrid-item")
-                    .find("button[aria-label='add to favorites']").click();
-
-                //Check the movie is on the favourites page
-                cy.get("button").contains("Favorites").click();
-                cy.get(".MuiCardHeader-content").contains(matchingMovies[0].title);
-                //Check the movie is on the must watch page
-                cy.get("button").contains("Must Watch").click();
-                cy.get(".MuiCardHeader-content").contains(matchingMovies[0].title);
-            } else {}
+                    //Check the movie is on the favourites page
+                    cy.get("button").contains("Favorites").click();
+                    cy.get(".MuiCardHeader-content").contains(matchingMovies[0].title);
+                    //Check the movie is on the must watch page
+                    cy.get("button").contains("Must Watch").click();
+                    cy.get(".MuiCardHeader-content").contains(matchingMovies[0].title);
+                } else {}
+            });
         });
     });
 
