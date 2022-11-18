@@ -54,34 +54,36 @@ describe("Base tests", () => {
             });
         })
 
-        it("displays the correct movie titles", () => {
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = sorted_movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
+        describe("Movie Information", () => {
+            it("displays the correct movie titles", () => {
+                cy.get(".MuiCardHeader-content").each(($card, index) => {
+                    //Necessary to prevent errors when API returns double spacing.
+                    var title = sorted_movies[index].title.replace( /\s\s+/g, ' ' );
+                    cy.wrap($card).find("p").contains(title);
+                });
             });
-        });
 
-        it("displays the correct movie posters", () => {
-            cy.get(".MuiCardMedia-root").each(($card, index) => {
-                var poster = "https://image.tmdb.org/t/p/w500/" + sorted_movies[index].poster_path;
-                cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + poster + '");');
+            it("displays the correct movie posters", () => {
+                cy.get(".MuiCardMedia-root").each(($card, index) => {
+                    var poster = "https://image.tmdb.org/t/p/w500/" + sorted_movies[index].poster_path;
+                    cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + poster + '");');
+                });
             });
-        });
 
-        it("displays the correct release date and rating", () => {
-            cy.get(".MuiCardContent-root").each(($card, index) => {
-                var release = sorted_movies[index].release_date;
-                var rating = sorted_movies[index].vote_average;
-                cy.wrap($card).should('contain', release).and('contain', rating);
+            it("displays the correct release date and rating", () => {
+                cy.get(".MuiCardContent-root").each(($card, index) => {
+                    var release = sorted_movies[index].release_date;
+                    var rating = sorted_movies[index].vote_average;
+                    cy.wrap($card).should('contain', release).and('contain', rating);
+                });
             });
-        });
 
-        it("displays the 'Add to Favourites' and 'More Info' Buttons", () => {
-            cy.get(".MuiCardActions-root").each(($card, index) => {
-                cy.wrap($card).find('button').should('have.attr', 'aria-label', 'add to favorites');
-                cy.wrap($card).find('a').should('have.attr', 'href', '/movies/' + sorted_movies[index].id)
-                    .and('contain', 'More Info ...');
+            it("displays the 'Add to Favourites' and 'More Info' Buttons", () => {
+                cy.get(".MuiCardActions-root").each(($card, index) => {
+                    cy.wrap($card).find('button').should('have.attr', 'aria-label', 'add to favorites');
+                    cy.wrap($card).find('a').should('have.attr', 'href', '/movies/' + sorted_movies[index].id)
+                        .and('contain', 'More Info ...');
+                });
             });
         });
     });
@@ -221,44 +223,46 @@ describe("Base tests", () => {
             });
         });
 
-        it("displays the correct cast names", () => {
-            //API sorts by role significance by default - no need to sort cast
-            
-            //Confirm Name is correct and links to person page
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var name = cast[index].name.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").find("a").should('contain', name)
-                    .and('have.attr', 'href', '/person/' + cast[index].id);
+        describe("Cast Information", () => {
+            it("displays the correct cast names", () => {
+                //API sorts by role significance by default - no need to sort cast
+                
+                //Confirm Name is correct and links to person page
+                cy.get(".MuiCardHeader-content").each(($card, index) => {
+                    //Necessary to prevent errors when API returns double spacing.
+                    var name = cast[index].name.replace( /\s\s+/g, ' ' );
+                    cy.wrap($card).find("p").find("a").should('contain', name)
+                        .and('have.attr', 'href', '/person/' + cast[index].id);
+                });
             });
-        });
 
-        it("displays the correct cast images", () => {
-            cy.get(".MuiCardMedia-root").each(($card, index) => {
-                //Check if cast member has image or one of the expected default images
-                if (cast[index].profile_path) {
-                    var image = "https://image.tmdb.org/t/p/w500/" + cast[index].profile_path;
-                    cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + image + '");');
-                }
-                //If female, check cast member has female default image
-                else if (cast[index].gender === 1){
-                    cy.fixture('../../src/images/female-person-placeholder.jpg').then((female) => {
-                        cy.wrap($card).should('have.attr', 'style', 'background-image: url("data:image/jpeg;base64,' + female + '");');
-                    });
-                }
-                //If male or other, check cast member has male default image
-                else {
-                    cy.fixture('../../src/images/male-person-placeholder.jpg').then((male) => {
-                        cy.wrap($card).should('have.attr', 'style', 'background-image: url("data:image/jpeg;base64,' + male + '");');
-                    });
-                }
+            it("displays the correct cast images", () => {
+                cy.get(".MuiCardMedia-root").each(($card, index) => {
+                    //Check if cast member has image or one of the expected default images
+                    if (cast[index].profile_path) {
+                        var image = "https://image.tmdb.org/t/p/w500/" + cast[index].profile_path;
+                        cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + image + '");');
+                    }
+                    //If female, check cast member has female default image
+                    else if (cast[index].gender === 1){
+                        cy.fixture('../../src/images/female-person-placeholder.jpg').then((female) => {
+                            cy.wrap($card).should('have.attr', 'style', 'background-image: url("data:image/jpeg;base64,' + female + '");');
+                        });
+                    }
+                    //If male or other, check cast member has male default image
+                    else {
+                        cy.fixture('../../src/images/male-person-placeholder.jpg').then((male) => {
+                            cy.wrap($card).should('have.attr', 'style', 'background-image: url("data:image/jpeg;base64,' + male + '");');
+                        });
+                    }
+                });
             });
-        });
 
-        it("displays the correct character names", () => {
-            cy.get(".MuiCardContent-root > p").each(($card, index) => {
-                var character = cast[index].character;
-                cy.wrap($card).should('contain', character);
+            it("displays the correct character names", () => {
+                cy.get(".MuiCardContent-root > p").each(($card, index) => {
+                    var character = cast[index].character;
+                    cy.wrap($card).should('contain', character);
+                });
             });
         });
     });
@@ -318,41 +322,43 @@ describe("Base tests", () => {
             });
         });
 
-        it("displays the correct crew names and links to their details page", () => {
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var name = crew[index].name.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").find("a").should('contain', name)
-                    .and('have.attr', 'href', '/person/' + crew[index].id);
+        describe("Crew Information", () => {
+            it("displays the correct crew names and links to their details page", () => {
+                cy.get(".MuiCardHeader-content").each(($card, index) => {
+                    //Necessary to prevent errors when API returns double spacing.
+                    var name = crew[index].name.replace( /\s\s+/g, ' ' );
+                    cy.wrap($card).find("p").find("a").should('contain', name)
+                        .and('have.attr', 'href', '/person/' + crew[index].id);
+                });
             });
-        });
 
-        it("displays the correct crew images", () => {
-            cy.get(".MuiCardMedia-root").each(($card, index) => {
-                //Check if crew member has image or one of the expected default images
-                if (crew[index].profile_path) {
-                    var image = "https://image.tmdb.org/t/p/w500/" + crew[index].profile_path;
-                    cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + image + '");');
-                }
-                //If female, check crew member has female default image
-                else if (crew[index].gender === 1){
-                    cy.fixture('../../src/images/female-person-placeholder.jpg').then((female) => {
-                        cy.wrap($card).should('have.attr', 'style', 'background-image: url("data:image/jpeg;base64,' + female + '");');
-                    });
-                }
-                //If male or other, check crew member has male default image
-                else {
-                    cy.fixture('../../src/images/male-person-placeholder.jpg').then((male) => {
-                        cy.wrap($card).should('have.attr', 'style', 'background-image: url("data:image/jpeg;base64,' + male + '");');
-                    });
-                }
+            it("displays the correct crew images", () => {
+                cy.get(".MuiCardMedia-root").each(($card, index) => {
+                    //Check if crew member has image or one of the expected default images
+                    if (crew[index].profile_path) {
+                        var image = "https://image.tmdb.org/t/p/w500/" + crew[index].profile_path;
+                        cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + image + '");');
+                    }
+                    //If female, check crew member has female default image
+                    else if (crew[index].gender === 1){
+                        cy.fixture('../../src/images/female-person-placeholder.jpg').then((female) => {
+                            cy.wrap($card).should('have.attr', 'style', 'background-image: url("data:image/jpeg;base64,' + female + '");');
+                        });
+                    }
+                    //If male or other, check crew member has male default image
+                    else {
+                        cy.fixture('../../src/images/male-person-placeholder.jpg').then((male) => {
+                            cy.wrap($card).should('have.attr', 'style', 'background-image: url("data:image/jpeg;base64,' + male + '");');
+                        });
+                    }
+                });
             });
-        });
 
-        it("displays the correct job(s) for each crew member", () => {
-            cy.get(".MuiCardContent-root > p").each(($card, index) => {
-                var job = crew[index].job;
-                cy.wrap($card).should('contain', job);
+            it("displays the correct job(s) for each crew member", () => {
+                cy.get(".MuiCardContent-root > p").each(($card, index) => {
+                    var job = crew[index].job;
+                    cy.wrap($card).should('contain', job);
+                });
             });
         });
     });
@@ -639,34 +645,36 @@ describe("Base tests", () => {
             });
         });
 
-        it("displays the correct movie titles", () => {
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = sorted_movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
+        describe("Movie Information", () => {
+            it("displays the correct movie titles", () => {
+                cy.get(".MuiCardHeader-content").each(($card, index) => {
+                    //Necessary to prevent errors when API returns double spacing.
+                    var title = sorted_movies[index].title.replace( /\s\s+/g, ' ' );
+                    cy.wrap($card).find("p").contains(title);
+                });
             });
-        });
 
-        it("displays the correct movie posters", () => {
-            cy.get(".MuiCardMedia-root").each(($card, index) => {
-                var poster = "https://image.tmdb.org/t/p/w500/" + sorted_movies[index].poster_path;
-                cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + poster + '");');
+            it("displays the correct movie posters", () => {
+                cy.get(".MuiCardMedia-root").each(($card, index) => {
+                    var poster = "https://image.tmdb.org/t/p/w500/" + sorted_movies[index].poster_path;
+                    cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + poster + '");');
+                });
             });
-        });
 
-        it("displays the correct release dates and ratings", () => {
-            cy.get(".MuiCardContent-root").each(($card, index) => {
-                var release = sorted_movies[index].release_date;
-                var rating = sorted_movies[index].vote_average;
-                cy.wrap($card).should('contain', release).and('contain', rating);
+            it("displays the correct release dates and ratings", () => {
+                cy.get(".MuiCardContent-root").each(($card, index) => {
+                    var release = sorted_movies[index].release_date;
+                    var rating = sorted_movies[index].vote_average;
+                    cy.wrap($card).should('contain', release).and('contain', rating);
+                });
             });
-        });
 
-        it("displays the 'Add to Must Watch' and 'More Info' buttons", () => {
-            cy.get(".MuiCardActions-root").each(($card, index) => {
-                cy.wrap($card).find('button').should('have.attr', 'aria-label', 'add to must watch');
-                cy.wrap($card).find('a').should('have.attr', 'href', '/movies/' + sorted_movies[index].id)
-                    .and('contain', 'More Info ...');
+            it("displays the 'Add to Must Watch' and 'More Info' buttons", () => {
+                cy.get(".MuiCardActions-root").each(($card, index) => {
+                    cy.wrap($card).find('button').should('have.attr', 'aria-label', 'add to must watch');
+                    cy.wrap($card).find('a').should('have.attr', 'href', '/movies/' + sorted_movies[index].id)
+                        .and('contain', 'More Info ...');
+                });
             });
         });
     });
@@ -750,26 +758,28 @@ describe("Base tests", () => {
             });
         });
 
-        it("displays the correct movie posters", () => {
-            cy.get(".MuiCardMedia-root").each(($card, index) => {
-                var poster = "https://image.tmdb.org/t/p/w500/" + sorted_movies[index].poster_path;
-                cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + poster + '");');
+        describe("Movie Information", () => {
+            it("displays the correct movie posters", () => {
+                cy.get(".MuiCardMedia-root").each(($card, index) => {
+                    var poster = "https://image.tmdb.org/t/p/w500/" + sorted_movies[index].poster_path;
+                    cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + poster + '");');
+                });
             });
-        });
 
-        it("displays the correct release dates and ratings", () => {
-            cy.get(".MuiCardContent-root").each(($card, index) => {
-                var release = sorted_movies[index].release_date;
-                var rating = sorted_movies[index].vote_average;
-                cy.wrap($card).should('contain', release).and('contain', rating);
+            it("displays the correct release dates and ratings", () => {
+                cy.get(".MuiCardContent-root").each(($card, index) => {
+                    var release = sorted_movies[index].release_date;
+                    var rating = sorted_movies[index].vote_average;
+                    cy.wrap($card).should('contain', release).and('contain', rating);
+                });
             });
-        });
 
-        it("displays the 'Add to Favourites' and 'More Info' buttons", () => {
-            cy.get(".MuiCardActions-root").each(($card, index) => {
-                cy.wrap($card).find('button').should('have.attr', 'aria-label', 'add to favorites');
-                cy.wrap($card).find('a').should('have.attr', 'href', '/movies/' + sorted_movies[index].id)
-                    .and('contain', 'More Info ...');
+            it("displays the 'Add to Favourites' and 'More Info' buttons", () => {
+                cy.get(".MuiCardActions-root").each(($card, index) => {
+                    cy.wrap($card).find('button').should('have.attr', 'aria-label', 'add to favorites');
+                    cy.wrap($card).find('a').should('have.attr', 'href', '/movies/' + sorted_movies[index].id)
+                        .and('contain', 'More Info ...');
+                });
             });
         });
     });
