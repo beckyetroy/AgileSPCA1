@@ -1,6 +1,9 @@
+import { excerpt } from "../../src/util";
+
 let movies; // List of movies from TMDB
 let movie; // Single Movie
 let movieimgs; // List of Movie Posters for a particular movie
+let moviereviews; // List of Reviews for a particular movie
 let sorted_movies; // List of movies after they've been sorted accordingly
 let cast; // List of cast members for a particular movie
 let crew; //List of crew members for a particular movie
@@ -176,6 +179,112 @@ describe("Base tests", () => {
 
         it(" displays the reviews button", () => {
             cy.get("button.MuiButtonBase-root.MuiFab-root").contains("Reviews", { matchCase: false });
+        });
+    });
+
+    describe("Reviews", () => {
+
+        before(() => {
+            cy.request(
+            `https://api.themoviedb.org/3/movie/${
+                movies[0].id
+            }?api_key=${Cypress.env("TMDB_KEY")}`
+            )
+            .its("body")
+            .then((movieDetails) => {
+                movie = movieDetails;
+            });
+
+            cy.request(
+                `https://api.themoviedb.org/3/movie/${
+                    movies[0].id
+                }/images?api_key=${Cypress.env("TMDB_KEY")}`
+                )
+                .its("body")
+                .then((movieImages) => {
+                    movieimgs = movieImages;
+            });
+
+            cy.request(
+                `https://api.themoviedb.org/3/movie/${
+                    movies[0].id
+                }/reviews?api_key=${Cypress.env("TMDB_KEY")}`
+                )
+                .its("body")
+                .then((movieReviews) => {
+                    moviereviews = movieReviews.results;
+            });
+        });
+
+        beforeEach(() => {
+            cy.visit(`/movies/${movies[0].id}`);
+            cy.get("button.MuiButtonBase-root.MuiFab-root").contains("Reviews", { matchCase: false }).click();
+        });
+
+        describe("Review excerpts", () => {
+
+            it("displays the correct headings for the excerpts view", () => {
+                cy.get('thead').find('tr').within(() => {
+                    cy.get("th").eq(0).contains("Author");
+                    cy.get("th").eq(1).contains("Excerpt");
+                    cy.get("th").eq(2).contains("More");
+                });
+            });
+
+            // it("displays review excerpts", () => {
+            //     cy.get("tbody").find('tr').each(($review, index) => {
+            //         //Verify author name
+            //         //Necessary to prevent errors when API returns double spacing.
+            //         var author = moviereviews[index].author.replace( /\s\s+/g, ' ' );
+            //         cy.wrap($review).find("th").contains(author);
+
+            //         //Verify review content
+            //         var content = (excerpt(moviereviews[index].content)).replace(/\n/, "");
+            //         cy.wrap($review).find("td").eq(0).contains(content);
+            //     });
+            // });
+
+            it("displays link to review details for each review", () => {
+                cy.get("tbody").find('tr').each(($review, index) => {
+                    var id = moviereviews[index].id;
+                    cy.wrap($review).find("td").eq(1).should('contain',"Full Review")
+                        .find("a").should('have.attr', 'href', '/reviews/' + id);
+                });
+            });
+        });
+
+        describe("The Review Details page", () => {
+
+            beforeEach(() => {
+                cy.visit(`/movies/${movies[0].id}`);
+                cy.get("button.MuiButtonBase-root.MuiFab-root").contains("Reviews", { matchCase: false }).click();
+                cy.get("tbody").find('tr').eq(0).find('td').eq(1).find("a").click();
+            });
+
+            it("navigates to the review details page", () => {
+                cy.url().should('eq', 'http://localhost:3000/reviews/' + moviereviews[0].id);
+            });
+
+            it("displays correct movie title, homepage link, and tagline", () => {
+                cy.get("h3").should('contain', movie.title)
+                    .and('contain', movie.tagline)
+                    .find('a').should('have.attr', 'href', movie.homepage)
+                    .find('svg').should('have.attr', 'data-testid', 'HomeIcon');
+            });
+    
+            it("displays the correct movie posters as a carousel", () => {
+                cy.get(".MuiGrid-root")
+                    .eq(0)
+                    .find(".MuiGrid-root.MuiGrid-item")
+                    .eq(0)
+                    .within(() => {
+                        var imgPath = movieimgs.posters.map((image) => image.file_path);
+                        cy.get("div").find("img").each(($img, index) => {
+                            cy.wrap($img).should('have.attr', 'src', 'https://image.tmdb.org/t/p/w500/' + imgPath[index]);
+                        });
+                    });
+            });
+            
         });
     });
 
