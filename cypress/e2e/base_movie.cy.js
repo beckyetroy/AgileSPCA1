@@ -55,10 +55,13 @@ describe("Base tests for pages concerned with a single movie", () => {
             cy.visit(`/movies/${movies[0].id}`);
         });
 
-        it(" displays the movie title, overview and genres", () => {
+        it(" displays the movie header, overview and genres", () => {
             //Necessary to prevent errors when API returns double spacing.
             var title = movie.title.replace( /\s\s+/g, ' ' );
-            cy.get("h3").contains(title);
+            cy.get("h3").should('contain', title)
+                    .and('contain', movie.tagline)
+                    .find('a').should('have.attr', 'href', movie.homepage)
+                    .find('svg').should('have.attr', 'data-testid', 'HomeIcon');
             cy.get("h3").contains("Overview");
 
             //Necessary to prevent errors when API returns double spacing.
@@ -147,18 +150,14 @@ describe("Base tests for pages concerned with a single movie", () => {
                 });
             });
 
-            // it("displays review excerpts", () => {
-            //     cy.get("tbody").find('tr').each(($review, index) => {
-            //         //Verify author name
-            //         //Necessary to prevent errors when API returns double spacing.
-            //         var author = moviereviews[index].author.replace( /\s\s+/g, ' ' );
-            //         cy.wrap($review).find("th").contains(author);
-
-            //         //Verify review content
-            //         var content = (excerpt(moviereviews[index].content)).replace(/\n/, "");
-            //         cy.wrap($review).find("td").eq(0).contains(content);
-            //     });
-            // });
+            it("displays correct review excerpts", () => {
+                cy.get("tbody").find('tr').each(($review, index) => {
+                    //Verify author name
+                    //Necessary to prevent errors when API returns double spacing.
+                    var author = moviereviews[index].author.replace( /\s\s+/g, ' ' );
+                    cy.wrap($review).find("th").contains(author);
+                });
+            });
 
             it("displays link to review details for each review", () => {
                 cy.get("tbody").find('tr').each(($review, index) => {
@@ -200,7 +199,17 @@ describe("Base tests for pages concerned with a single movie", () => {
                         });
                     });
             });
-            
+
+            it("displays the correct review details", () => {
+                cy.get(".MuiGrid-root")
+                    .eq(0)
+                    .find(".MuiGrid-root.MuiGrid-item")
+                    .eq(1)
+                    .within(() => {
+                        var author = moviereviews[0].author.replace( /\s\s+/g, ' ' );
+                        cy.get('p').eq(0).should('contain', "Review By:").and('contain', author);
+                    });
+            });
         });
     });
 
