@@ -1,14 +1,18 @@
+import { excerpt } from "../../src/util";
+
 let movies; // List of movies from TMDB
+
 let movie; // Single Movie
 let movieimgs; // List of Movie Posters for a particular movie
-let sorted_movies; // List of movies after they've been sorted accordingly
+let moviereviews; // List of Reviews for a particular movie
+
 let cast; // List of cast members for a particular movie
 let crew; //List of crew members for a particular movie
 let castMember; // Single cast member
 let crewMember; // Single crew member
 var seen = {}; //Used for filtering crew list (see crew list page tests)
 
-describe("Base tests", () => {
+describe("Base tests for pages concerned with a single movie", () => {
 
     before(() => {
         // Get the discover movies from TMDB and store them locally.
@@ -22,76 +26,9 @@ describe("Base tests", () => {
             movies = response.results;
             });
     });
-    
+
     beforeEach(() => {
-        cy.visit("/");
-        sorted_movies = movies.sort((m1, m2) => (
-            (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
-        ));
-    });
-
-    describe("The Discover Movies page", () => {
-        it("displays the page header and 7 movies on first load", () => {
-            cy.get("h3").contains("Discover Movies");
-            cy.get(".MuiCardHeader-root").should("have.length", 7);
-        });
-
-        it("displays the 'Filter Movies' card and all relevant filter/sort fields", () => {
-            cy.get(".MuiGrid-root.MuiGrid-container")
-            .eq(1)
-            .find(".MuiGrid-root.MuiGrid-item")
-            .eq(0)
-            .within(() => {
-                cy.get("h1").contains("Filter Movies");
-                //Check if Input and Select fields are as expected
-                cy.get("#filled-search").should('have.class',
-                    "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
-                cy.get("#genre-select").should('have.class',
-                    "MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused");
-                cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
-                //Check if Movies are sorted by popularity by default
-                .contains("Popularity");
-            });
-        })
-
-        describe("Movie Information", () => {
-            it("displays the correct movie titles", () => {
-                cy.get(".MuiCardHeader-content").each(($card, index) => {
-                    //Necessary to prevent errors when API returns double spacing.
-                    var title = sorted_movies[index].title.replace( /\s\s+/g, ' ' );
-                    cy.wrap($card).find("p").contains(title);
-                });
-            });
-
-            it("displays the correct movie posters", () => {
-                cy.get(".MuiCardMedia-root").each(($card, index) => {
-                    var poster = "https://image.tmdb.org/t/p/w500/" + sorted_movies[index].poster_path;
-                    cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + poster + '");');
-                });
-            });
-
-            it("displays the correct release date and rating", () => {
-                cy.get(".MuiCardContent-root").each(($card, index) => {
-                    var release = sorted_movies[index].release_date;
-                    var rating = sorted_movies[index].vote_average;
-                    cy.wrap($card).should('contain', release).and('contain', rating);
-                });
-            });
-
-            it("displays the 'Add to Favourites' and 'More Info' Buttons", () => {
-                cy.get(".MuiCardActions-root").each(($card, index) => {
-                    cy.wrap($card).find('button').should('have.attr', 'aria-label', 'add to favorites');
-                    cy.wrap($card).find('a').should('have.attr', 'href', '/movies/' + sorted_movies[index].id)
-                        .and('contain', 'More Info ...');
-                });
-            });
-        });
-    });
-
-    describe("The Movie Details page", () => {
-
-        before(() => {
-            cy.request(
+        cy.request(
             `https://api.themoviedb.org/3/movie/${
                 movies[0].id
             }?api_key=${Cypress.env("TMDB_KEY")}`
@@ -100,26 +37,31 @@ describe("Base tests", () => {
             .then((movieDetails) => {
                 movie = movieDetails;
             });
+    
+        cy.request(
+            `https://api.themoviedb.org/3/movie/${
+                movies[0].id
+            }/images?api_key=${Cypress.env("TMDB_KEY")}`
+            )
+            .its("body")
+            .then((movieImages) => {
+                movieimgs = movieImages;
+            });
+    });
 
-            cy.request(
-                `https://api.themoviedb.org/3/movie/${
-                    movies[0].id
-                }/images?api_key=${Cypress.env("TMDB_KEY")}`
-                )
-                .its("body")
-                .then((movieImages) => {
-                    movieimgs = movieImages;
-                });
-        });
+    describe("The Movie Details page", () => {
 
         beforeEach(() => {
             cy.visit(`/movies/${movies[0].id}`);
         });
 
-        it(" displays the movie title, overview and genres", () => {
+        it(" displays the movie header, overview and genres", () => {
             //Necessary to prevent errors when API returns double spacing.
             var title = movie.title.replace( /\s\s+/g, ' ' );
-            cy.get("h3").contains(title);
+            cy.get("h3").should('contain', title)
+                    .and('contain', movie.tagline)
+                    .find('a').should('have.attr', 'href', movie.homepage)
+                    .find('svg').should('have.attr', 'data-testid', 'HomeIcon');
             cy.get("h3").contains("Overview");
 
             //Necessary to prevent errors when API returns double spacing.
@@ -176,6 +118,98 @@ describe("Base tests", () => {
 
         it(" displays the reviews button", () => {
             cy.get("button.MuiButtonBase-root.MuiFab-root").contains("Reviews", { matchCase: false });
+        });
+    });
+
+    describe("Reviews", () => {
+
+        before(() => {
+            cy.request(
+                `https://api.themoviedb.org/3/movie/${
+                    movies[0].id
+                }/reviews?api_key=${Cypress.env("TMDB_KEY")}`
+                )
+                .its("body")
+                .then((movieReviews) => {
+                    moviereviews = movieReviews.results;
+            });
+        });
+
+        beforeEach(() => {
+            cy.visit(`/movies/${movies[0].id}`);
+            cy.get("button.MuiButtonBase-root.MuiFab-root").contains("Reviews", { matchCase: false }).click();
+        });
+
+        describe("Review excerpts", () => {
+
+            it("displays the correct headings for the excerpts view", () => {
+                cy.get('thead').find('tr').within(() => {
+                    cy.get("th").eq(0).contains("Author");
+                    cy.get("th").eq(1).contains("Excerpt");
+                    cy.get("th").eq(2).contains("More");
+                });
+            });
+
+            it("displays correct review excerpts", () => {
+                cy.get("tbody").find('tr').each(($review, index) => {
+                    //Verify author name
+                    //Necessary to prevent errors when API returns double spacing.
+                    var author = moviereviews[index].author.replace( /\s\s+/g, ' ' );
+                    cy.wrap($review).find("th").contains(author);
+                });
+            });
+
+            it("displays link to review details for each review", () => {
+                cy.get("tbody").find('tr').each(($review, index) => {
+                    var id = moviereviews[index].id;
+                    cy.wrap($review).find("td").eq(1).should('contain',"Full Review")
+                        .find("a").should('have.attr', 'href', '/reviews/' + id);
+                });
+            });
+        });
+
+        describe("The Review Details page", () => {
+
+            beforeEach(() => {
+                cy.visit(`/movies/${movies[0].id}`);
+                cy.get("button.MuiButtonBase-root.MuiFab-root").contains("Reviews", { matchCase: false }).click();
+                cy.get("tbody").find('tr').eq(0).find('td').eq(1).find("a").click();
+            });
+
+            it("navigates to the review details page", () => {
+                cy.url().should('eq', 'http://localhost:3000/reviews/' + moviereviews[0].id);
+            });
+
+            it("displays correct movie title, homepage link, and tagline", () => {
+                cy.get("h3").should('contain', movie.title)
+                    .and('contain', movie.tagline)
+                    .find('a').should('have.attr', 'href', movie.homepage)
+                    .find('svg').should('have.attr', 'data-testid', 'HomeIcon');
+            });
+
+            it("displays the correct movie posters as a carousel", () => {
+                cy.get(".MuiGrid-root")
+                    .eq(0)
+                    .find(".MuiGrid-root.MuiGrid-item")
+                    .eq(0)
+                    .within(() => {
+                        var imgPath = movieimgs.posters.map((image) => image.file_path);
+                        cy.get("div").find("img").each(($img, index) => {
+                            cy.wrap($img).should('have.attr', 'src', 'https://image.tmdb.org/t/p/w500/' + imgPath[index]);
+                        });
+                    });
+            });
+
+            it("displays the correct review details", () => {
+                cy.get(".MuiGrid-root")
+                    .eq(0)
+                    .find(".MuiGrid-root.MuiGrid-item")
+                    .eq(1)
+                    .within(() => {
+                        var author = moviereviews[0].author.replace( /\s\s+/g, ' ' );
+                        cy.get('p').eq(0).should('contain', "Review By:").and('contain', author);
+                    });
+            });
         });
     });
 
@@ -570,215 +604,6 @@ describe("Base tests", () => {
                     cy.get("svg").eq(1).should('have.attr', 'data-testid', 'PlaceIcon');
 
                     cy.get("span").contains("Known for: " + crewMember.known_for_department);
-                });
-            });
-        });
-    });
-
-    describe("The Favorites page", () => {
-        beforeEach(() => {
-            cy.visit("/movies/favorites");
-        });
-
-        it("displays the page header", () => {
-            cy.get("h3").contains("Favorite Movies");
-        });
-
-        it("displays the 'Filter Movies' card and all relevant filter/sort fields", () => {
-            cy.get(".MuiGrid-root.MuiGrid-container")
-            .eq(1)
-            .find(".MuiGrid-root.MuiGrid-item")
-            .eq(0)
-            .within(() => {
-                cy.get("h1").contains("Filter Movies");
-                //Check if Input and Select fields are as expected
-                cy.get("#filled-search").should('have.class',
-                    "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
-                cy.get("#genre-select").should('have.class',
-                    "MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused");
-                cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
-                //Check if Movies are sorted by popularity by default
-                .contains("Popularity");
-            });
-        });
-    });
-
-    describe("The Upcoming Movies page", () => {
-
-        before(() => {
-            cy.request(
-            `https://api.themoviedb.org/3/movie/upcoming?api_key=${Cypress.env("TMDB_KEY")}`
-            )
-            .its("body")
-            .then((response) => {
-            movies = response.results;
-            });
-        });
-
-        beforeEach(() => {
-            cy.visit("/movies/upcoming");
-            sorted_movies = movies.sort((m1, m2) => (
-                (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
-            ));
-        });
-
-        it("displays the page header and 7 movies on first load", () => {
-            cy.get("h3").contains("Upcoming Movies");
-            cy.get(".MuiCardHeader-root").should("have.length", 7);
-        });
-
-        it("displays the 'Filter Movies' card and all relevant filter/sort fields", () => {
-            cy.get(".MuiGrid-root.MuiGrid-container")
-            .eq(1)
-            .find(".MuiGrid-root.MuiGrid-item")
-            .eq(0)
-            .within(() => {
-                cy.get("h1").contains("Filter Movies");
-                //Check if Input and Select fields are as expected
-                cy.get("#filled-search").should('have.class',
-                    "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
-                cy.get("#genre-select").should('have.class',
-                    "MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused");
-                cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
-                //Check if Movies are sorted by popularity by default
-                .contains("Popularity");
-            });
-        });
-
-        describe("Movie Information", () => {
-            it("displays the correct movie titles", () => {
-                cy.get(".MuiCardHeader-content").each(($card, index) => {
-                    //Necessary to prevent errors when API returns double spacing.
-                    var title = sorted_movies[index].title.replace( /\s\s+/g, ' ' );
-                    cy.wrap($card).find("p").contains(title);
-                });
-            });
-
-            it("displays the correct movie posters", () => {
-                cy.get(".MuiCardMedia-root").each(($card, index) => {
-                    var poster = "https://image.tmdb.org/t/p/w500/" + sorted_movies[index].poster_path;
-                    cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + poster + '");');
-                });
-            });
-
-            it("displays the correct release dates and ratings", () => {
-                cy.get(".MuiCardContent-root").each(($card, index) => {
-                    var release = sorted_movies[index].release_date;
-                    var rating = sorted_movies[index].vote_average;
-                    cy.wrap($card).should('contain', release).and('contain', rating);
-                });
-            });
-
-            it("displays the 'Add to Must Watch' and 'More Info' buttons", () => {
-                cy.get(".MuiCardActions-root").each(($card, index) => {
-                    cy.wrap($card).find('button').should('have.attr', 'aria-label', 'add to must watch');
-                    cy.wrap($card).find('a').should('have.attr', 'href', '/movies/' + sorted_movies[index].id)
-                        .and('contain', 'More Info ...');
-                });
-            });
-        });
-    });
-
-    describe("The Must Watch page", () => {
-        beforeEach(() => {
-            cy.visit("/movies/mustwatch");
-        });
-
-        it("displays the page header", () => {
-            cy.get("h3").contains("Your Must-Watch Movies");
-        });
-
-        it("displays the 'Filter Movies' card and all relevant filter/sort fields", () => {
-            cy.get(".MuiGrid-root.MuiGrid-container")
-            .eq(1)
-            .find(".MuiGrid-root.MuiGrid-item")
-            .eq(0)
-            .within(() => {
-                cy.get("h1").contains("Filter Movies");
-                //Check if Input and Select fields are as expected
-                cy.get("#filled-search").should('have.class',
-                    "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
-                cy.get("#genre-select").should('have.class',
-                    "MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused");
-                cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
-                //Check if Movies are sorted by popularity by default
-                .contains("Popularity");
-            });
-        });
-    });
-
-    describe("The Trending page", () => {
-        before(() => {
-            cy.request(
-            `https://api.themoviedb.org/3/trending/movie/week?api_key=${Cypress.env("TMDB_KEY")}`
-            )
-            .its("body")
-            .then((response) => {
-            movies = response.results;
-            });
-        });
-
-        beforeEach(() => {
-            cy.visit("/movies/trending/week");
-            sorted_movies = movies.sort((m1, m2) => (
-                (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
-              ));
-        });
-
-        it("displays the page header", () => {
-            cy.get("h3").contains("Trending This Week");
-        });
-
-        it("displays the 'Filter Movies' card and all relevant filter/sort fields", () => {
-            cy.get(".MuiGrid-root.MuiGrid-container")
-            .eq(1)
-            .find(".MuiGrid-root.MuiGrid-item")
-            .eq(0)
-            .within(() => {
-                cy.get("h1").contains("Filter Movies");
-                //Check if Input and Select fields are as expected
-                cy.get("#filled-search").should('have.class',
-                    "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
-                cy.get("#time-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
-                //Check if Trending is set to this week
-                .contains("This Week");
-                cy.get("#genre-select").should('have.class',
-                    "MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused");
-                cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
-                //Check if Movies are sorted by popularity by default
-                .contains("Popularity");
-            });
-        });
-
-        it("displays the correct movie titles", () => {
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = sorted_movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
-        });
-
-        describe("Movie Information", () => {
-            it("displays the correct movie posters", () => {
-                cy.get(".MuiCardMedia-root").each(($card, index) => {
-                    var poster = "https://image.tmdb.org/t/p/w500/" + sorted_movies[index].poster_path;
-                    cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + poster + '");');
-                });
-            });
-
-            it("displays the correct release dates and ratings", () => {
-                cy.get(".MuiCardContent-root").each(($card, index) => {
-                    var release = sorted_movies[index].release_date;
-                    var rating = sorted_movies[index].vote_average;
-                    cy.wrap($card).should('contain', release).and('contain', rating);
-                });
-            });
-
-            it("displays the 'Add to Favourites' and 'More Info' buttons", () => {
-                cy.get(".MuiCardActions-root").each(($card, index) => {
-                    cy.wrap($card).find('button').should('have.attr', 'aria-label', 'add to favorites');
-                    cy.wrap($card).find('a').should('have.attr', 'href', '/movies/' + sorted_movies[index].id)
-                        .and('contain', 'More Info ...');
                 });
             });
         });
