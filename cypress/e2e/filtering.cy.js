@@ -31,10 +31,13 @@ describe("Filtering", () => {
                 const searchString = "m";
                 const matchingMovies = filterByTitle(sorted_movies, searchString);
                 cy.get("#filled-search").clear().type(searchString); // Enter m in text box
-                cy.get(".MuiCardHeader-content").each(($card, index) => {
-                    cy.wrap($card).find("p").contains(matchingMovies[index].title);
-                    cy.wrap($card).find("p").contains('m', {matchCase: false});
-                });
+                if (matchingMovies) {
+                    cy.get(".MuiCardHeader-content").each(($card, index) => {
+                        cy.wrap($card).find("p").contains(matchingMovies[index].title);
+                        cy.wrap($card).find("p").contains('m', {matchCase: false});
+                    });
+                }
+                else cy.get(".MuiCardHeader-content").should("have.length", 0);
             });
 
             it("displays nothing when no movies match", () => {
@@ -52,9 +55,12 @@ describe("Filtering", () => {
                 //Select Adventure
                 cy.get("#genre-select").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
-                cy.get(".MuiCardHeader-content").each(($card, index) => {
-                    cy.wrap($card).find("p").contains(matchingMovies[index].title);
-                });
+                if (matchingMovies) {
+                    cy.get(".MuiCardHeader-content").each(($card, index) => {
+                        cy.wrap($card).find("p").contains(matchingMovies[index].title);
+                    });
+                }
+                else cy.get(".MuiCardHeader-content").should("have.length", 0);
             });
 
             it("displays movies with multiple selected genres", () => {
@@ -70,9 +76,12 @@ describe("Filtering", () => {
                 //Select Adventure
                 cy.get("#genre-select").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
-                cy.get(".MuiCardHeader-content").each(($card, index) => {
-                    cy.wrap($card).find("p").contains(matchingMovies[index].title);
-                });
+                if (matchingMovies) {
+                    cy.get(".MuiCardHeader-content").each(($card, index) => {
+                        cy.wrap($card).find("p").contains(matchingMovies[index].title);
+                    });
+                }
+                else cy.get(".MuiCardHeader-content").should("have.length", 0);
             });
 
             it("clears one genre filter correctly", () => {
@@ -90,9 +99,11 @@ describe("Filtering", () => {
                 //Clear the Comedy filter
                 cy.get("svg").eq(3).should('have.attr', 'data-testid', 'CancelIcon').click();
                 //Check cards are only filtered by adventure genre now
-                cy.get(".MuiCardHeader-content").each(($card, index) => {
-                    cy.wrap($card).find("p").contains(matchingMovies[index].title);
-                });
+                if (matchingMovies) {
+                    cy.get(".MuiCardHeader-content").each(($card, index) => {
+                        cy.wrap($card).find("p").contains(matchingMovies[index].title);
+                    });
+                }
             });
 
             it("clears all genre filters when removed one by one", () => {
@@ -140,9 +151,12 @@ describe("Filtering", () => {
                 const searchString = "c";
                 const matchingMovies = filterByTitle(matchingMoviesGenre, searchString);
                 cy.get("#filled-search").clear().type(searchString); // Enter c in text box
-                cy.get(".MuiCardHeader-content").each(($card, index) => {
-                    cy.wrap($card).find("p").contains(matchingMovies[index].title);
-                });
+                if (matchingMovies) {
+                    cy.get(".MuiCardHeader-content").each(($card, index) => {
+                        cy.wrap($card).find("p").contains(matchingMovies[index].title);
+                    });
+                }
+                else cy.get(".MuiCardHeader-content").should("have.length", 0);
             });
         });
     });
