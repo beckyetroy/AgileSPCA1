@@ -21,6 +21,7 @@ export const filterByJob = (castList, string) =>
   });
 
 //Sorting
+//Very good storting solution
 export const sortItemsLargeFirst = (list, sortType) =>
   list.sort((i1, i2) => (
     (i1[sortType] < i2[sortType]) ? 1 : (i1[sortType] > i2[sortType]) ? -1 : 0
