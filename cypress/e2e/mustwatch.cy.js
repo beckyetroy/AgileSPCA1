@@ -38,7 +38,7 @@ describe("The must watch feature", () => {
     describe("Selecting must watch", () => {
         it("selected movie card shows the playlist icon", () => {
             cy.get(".MuiCardHeader-root").eq(1).find("svg").should("not.exist");
-            cy.get("button[aria-label='add to must watch']").eq(1).click();
+            cy.addToMustWatch([1]);
             cy.get(".MuiCardHeader-root").eq(1).find("svg").should('have.attr', 'data-testid', 'PlaylistAddIcon');
         });
 
@@ -141,8 +141,7 @@ describe("The must watch feature", () => {
                     movie3 = movieDetails;
                 });
             // Select two to add to must watch and navigate to Must Watch page
-            cy.get("button[aria-label='add to must watch']").eq(1).click();
-            cy.get("button[aria-label='add to must watch']").eq(3).click();
+            cy.addToMustWatch([1,3]);
             cy.get("button").contains("Must Watch").click();
         });
 

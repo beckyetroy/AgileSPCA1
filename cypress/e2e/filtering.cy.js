@@ -178,11 +178,7 @@ describe("Filtering", () => {
         beforeEach(() => {
             cy.visit("/");
             // Select 5 favourites and navigate to the favourites page
-            cy.get("button[aria-label='add to favorites']").eq(0).click();
-            cy.get("button[aria-label='add to favorites']").eq(1).click();
-            cy.get("button[aria-label='add to favorites']").eq(5).click();
-            cy.get("button[aria-label='add to favorites']").eq(3).click();
-            cy.get("button[aria-label='add to favorites']").eq(6).click();
+            cy.addToFavourites([0,1,5,3,6]);
             cy.get("button").contains("Favorites").click();
             sorted_movies = sortItemsLargeFirst(movies, "popularity");
             const favorite_ids = [0,1,5,3,6];
@@ -492,11 +488,7 @@ describe("Filtering", () => {
         beforeEach(() => {
             cy.visit("/movies/upcoming");
             // Select 5 to add to must watch and navigate to Must Watch page
-            cy.get("button[aria-label='add to must watch']").eq(1).click();
-            cy.get("button[aria-label='add to must watch']").eq(3).click();
-            cy.get("button[aria-label='add to must watch']").eq(0).click();
-            cy.get("button[aria-label='add to must watch']").eq(5).click();
-            cy.get("button[aria-label='add to must watch']").eq(6).click();
+            cy.addToMustWatch([1,3,0,5,6]);
             cy.get("button").contains("Must Watch").click();
             sorted_movies = sortItemsLargeFirst(movies, "popularity");
             const mustwatch_ids = [0,1,5,3,6];

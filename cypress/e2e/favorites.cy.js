@@ -27,7 +27,7 @@ describe("The favourites feature", () => {
     describe("Selecting favourites", () => {
         it("selected movie card shows the red heart", () => {
             cy.get(".MuiCardHeader-root").eq(1).find("svg").should("not.exist");
-            cy.get("button[aria-label='add to favorites']").eq(1).click();
+            cy.addToFavourites([1]);
             cy.get(".MuiCardHeader-root").eq(1).find("svg").should('have.attr', 'data-testid', 'FavoriteIcon');
         });
     });
@@ -55,8 +55,7 @@ describe("The favourites feature", () => {
                     movie3 = movieDetails;
                 });
             // Select two favourites and navigate to Favourites page
-            cy.get("button[aria-label='add to favorites']").eq(1).click();
-            cy.get("button[aria-label='add to favorites']").eq(3).click();
+            cy.addToFavourites([1,3]);
             cy.get("button").contains("Favorites").click();
         });
 
@@ -181,7 +180,7 @@ describe("The 'write review' feature", () => {
     beforeEach(() => {
         cy.visit("/");
         // Select a favourite and navigate to Favourites page
-        cy.get("button[aria-label='add to favorites']").eq(1).click();
+        cy.addToFavourites([1]);
         cy.get("button").contains("Favorites").click();
         // Navigate to the 'write review' form
         cy.get('.MuiCardActions-root').find('svg').eq(1)

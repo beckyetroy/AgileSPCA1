@@ -23,3 +23,19 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+//Add the movies at the specified indexes to favourites
+Cypress.Commands.add('addToFavourites', (indexes) => {
+    let i;
+    for (i = 0; i < indexes.length; i++) {
+        cy.get("button[aria-label='add to favorites']").eq(indexes[i]).click();
+    }
+});
+
+//Add the movies at the specified indexes to must watch list
+Cypress.Commands.add('addToMustWatch', (indexes) => {
+    let i;
+    for (i = 0; i < indexes.length; i++) {
+        cy.get("button[aria-label='add to must watch']").eq(indexes[i]).click();
+    }
+});

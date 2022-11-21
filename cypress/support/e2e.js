@@ -1,3 +1,5 @@
+import './commands';
+
 //Filtering
 export const filterByTitle = (movieList, string) =>
   movieList.filter((m) => m.title.toLowerCase().search(string) !== -1);
