@@ -1,3 +1,5 @@
+import { sortItemsLargeFirst } from "../support/e2e";
+
 let movies;
 let movie;
 let movieimgs;
@@ -14,9 +16,7 @@ describe("The favourites feature", () => {
         )
             .its("body")
             .then((response) => {
-                movies = response.results
-                .sort((m1, m2) => (
-                    (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0));
+                movies = sortItemsLargeFirst(response.results, "popularity");
             });
     });
 

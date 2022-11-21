@@ -1,3 +1,5 @@
+import { sortItemsLargeFirst } from "../support/e2e";
+
 let movies; // List of movies from TMDB
 let sorted_movies; // List of movies after they've been sorted accordingly
 
@@ -18,9 +20,7 @@ describe("Base tests for pages with multiple movies", () => {
     
     beforeEach(() => {
         cy.visit("/");
-        sorted_movies = movies.sort((m1, m2) => (
-            (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
-        ));
+        sorted_movies = sortItemsLargeFirst(movies, "popularity");
     });
 
     describe("The Discover Movies page", () => {
@@ -123,9 +123,7 @@ describe("Base tests for pages with multiple movies", () => {
 
         beforeEach(() => {
             cy.visit("/movies/upcoming");
-            sorted_movies = movies.sort((m1, m2) => (
-                (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
-            ));
+            sorted_movies = sortItemsLargeFirst(movies, "popularity");
         });
 
         it("displays the page header and 7 movies on first load", () => {
@@ -226,9 +224,7 @@ describe("Base tests for pages with multiple movies", () => {
 
         beforeEach(() => {
             cy.visit("/movies/trending/week");
-            sorted_movies = movies.sort((m1, m2) => (
-                (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
-              ));
+            sorted_movies = sortItemsLargeFirst(movies, "popularity");
         });
 
         it("displays the page header", () => {
