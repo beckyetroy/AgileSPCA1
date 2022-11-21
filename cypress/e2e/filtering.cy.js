@@ -1,3 +1,4 @@
+import { sortItemsLargeFirst } from "../support/e2e";
 import { filterByGenre, filterByTitle, filterByCharacter, filterByJob, filterByName } from "../support/e2e";
 
 let movies; // List of Discover movies from TMDB
@@ -33,9 +34,7 @@ describe("Filtering", () => {
 
         beforeEach(() => {
             cy.visit("/");
-            sorted_movies = movies.sort((m1, m2) => (
-                (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
-            ));
+            sorted_movies = sortItemsLargeFirst(movies, "popularity");
         });
 
         describe("By movie title", () => {
@@ -184,9 +183,7 @@ describe("Filtering", () => {
             cy.get("button[aria-label='add to favorites']").eq(3).click();
             cy.get("button[aria-label='add to favorites']").eq(6).click();
             cy.get("button").contains("Favorites").click();
-            sorted_movies = movies.sort((m1, m2) => (
-                (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
-            ));
+            sorted_movies = sortItemsLargeFirst(movies, "popularity");
             const favorite_ids = [0,1,5,3,6];
             favorite_movies = sorted_movies.filter(movie => favorite_ids.includes(sorted_movies.indexOf(movie)));
         });
@@ -341,9 +338,7 @@ describe("Filtering", () => {
 
         beforeEach(() => {
             cy.visit("/movies/upcoming");
-            sorted_movies = movies.sort((m1, m2) => (
-                (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
-            ));
+            sorted_movies = sortItemsLargeFirst(movies, "popularity");
         });
 
         describe("By movie title", () => {
@@ -502,9 +497,7 @@ describe("Filtering", () => {
             cy.get("button[aria-label='add to must watch']").eq(5).click();
             cy.get("button[aria-label='add to must watch']").eq(6).click();
             cy.get("button").contains("Must Watch").click();
-            sorted_movies = movies.sort((m1, m2) => (
-                (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
-            ));
+            sorted_movies = sortItemsLargeFirst(movies, "popularity");
             const mustwatch_ids = [0,1,5,3,6];
             mustwatch_movies = sorted_movies.filter(movie => mustwatch_ids.includes(sorted_movies.indexOf(movie)));
         });
@@ -666,12 +659,8 @@ describe("Filtering", () => {
 
         beforeEach(() => {
             cy.visit("/movies/trending/week");
-            sorted_movies_week = moviesweek.sort((m1, m2) => (
-                (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
-            ));
-            sorted_movies_day = moviesday.sort((m1, m2) => (
-                (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
-            ));
+            sorted_movies_week = sortItemsLargeFirst(moviesweek, "popularity");
+            sorted_movies_day = sortItemsLargeFirst(moviesday, "popularity");
         });
 
         describe("By movie title", () => {
@@ -821,9 +810,7 @@ describe("Filtering", () => {
 
                 beforeEach(() => {
                     cy.visit("/movies/trending/today");
-                    sorted_movies_day = moviesday.sort((m1, m2) => (
-                        (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
-                    ));
+                    sorted_movies_day = sortItemsLargeFirst(moviesday, "popularity");
                 });
                 
                 it("displays the 'Filter Movies' card and all relevant filter/sort fields", () => {
@@ -892,9 +879,7 @@ describe("Filtering", () => {
 
                 beforeEach(() => {
                     cy.visit("/movies/trending/today");
-                    sorted_movies_day = moviesday.sort((m1, m2) => (
-                        (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0
-                    ));
+                    sorted_movies_day = sortItemsLargeFirst(moviesday, "popularity");
                 });
 
                 describe("By movie title", () => {

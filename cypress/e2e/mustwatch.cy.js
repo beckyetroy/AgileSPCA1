@@ -1,3 +1,5 @@
+import { sortItemsLargeFirst } from "../support/e2e";
+
 let upcomingMovies;
 let movies;
 let movie1;
@@ -13,9 +15,7 @@ describe("The must watch feature", () => {
         )
         .its("body")
         .then((response) => {
-            upcomingMovies = response.results
-            .sort((m1, m2) => (
-                (m1.popularity < m2.popularity) ? 1 : (m1.popularity > m2.popularity) ? -1 : 0));
+            upcomingMovies = sortItemsLargeFirst(response.results, "popularity");
         });
         cy.request(
             `https://api.themoviedb.org/3/discover/movie?api_key=${Cypress.env(
