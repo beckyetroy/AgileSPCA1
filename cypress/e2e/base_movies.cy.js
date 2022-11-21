@@ -49,26 +49,15 @@ describe("Base tests for pages with multiple movies", () => {
 
         describe("Movie Information", () => {
             it("displays the correct movie titles", () => {
-                cy.get(".MuiCardHeader-content").each(($card, index) => {
-                    //Necessary to prevent errors when API returns double spacing.
-                    var title = sorted_movies[index].title.replace( /\s\s+/g, ' ' );
-                    cy.wrap($card).find("p").contains(title);
-                });
+                cy.verifyMovieTitles(sorted_movies);
             });
 
             it("displays the correct movie posters", () => {
-                cy.get(".MuiCardMedia-root").each(($card, index) => {
-                    var poster = "https://image.tmdb.org/t/p/w500/" + sorted_movies[index].poster_path;
-                    cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + poster + '");');
-                });
+                cy.verifyMoviePosters(sorted_movies);
             });
 
             it("displays the correct release date and rating", () => {
-                cy.get(".MuiCardContent-root").each(($card, index) => {
-                    var release = sorted_movies[index].release_date;
-                    var rating = sorted_movies[index].vote_average;
-                    cy.wrap($card).should('contain', release).and('contain', rating);
-                });
+                cy.verifyReleaseRating(sorted_movies);
             });
 
             it("displays the 'Add to Favourites' and 'More Info' Buttons", () => {
@@ -151,26 +140,15 @@ describe("Base tests for pages with multiple movies", () => {
 
         describe("Movie Information", () => {
             it("displays the correct movie titles", () => {
-                cy.get(".MuiCardHeader-content").each(($card, index) => {
-                    //Necessary to prevent errors when API returns double spacing.
-                    var title = sorted_movies[index].title.replace( /\s\s+/g, ' ' );
-                    cy.wrap($card).find("p").contains(title);
-                });
+                cy.verifyMovieTitles(sorted_movies);
             });
 
             it("displays the correct movie posters", () => {
-                cy.get(".MuiCardMedia-root").each(($card, index) => {
-                    var poster = "https://image.tmdb.org/t/p/w500/" + sorted_movies[index].poster_path;
-                    cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + poster + '");');
-                });
+                cy.verifyMoviePosters(sorted_movies);
             });
 
             it("displays the correct release dates and ratings", () => {
-                cy.get(".MuiCardContent-root").each(($card, index) => {
-                    var release = sorted_movies[index].release_date;
-                    var rating = sorted_movies[index].vote_average;
-                    cy.wrap($card).should('contain', release).and('contain', rating);
-                });
+                cy.verifyReleaseRating(sorted_movies);
             });
 
             it("displays the 'Add to Must Watch' and 'More Info' buttons", () => {
@@ -253,27 +231,16 @@ describe("Base tests for pages with multiple movies", () => {
         });
 
         it("displays the correct movie titles", () => {
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = sorted_movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(sorted_movies);
         });
 
         describe("Movie Information", () => {
             it("displays the correct movie posters", () => {
-                cy.get(".MuiCardMedia-root").each(($card, index) => {
-                    var poster = "https://image.tmdb.org/t/p/w500/" + sorted_movies[index].poster_path;
-                    cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + poster + '");');
-                });
+                cy.verifyMoviePosters(sorted_movies);
             });
 
             it("displays the correct release dates and ratings", () => {
-                cy.get(".MuiCardContent-root").each(($card, index) => {
-                    var release = sorted_movies[index].release_date;
-                    var rating = sorted_movies[index].vote_average;
-                    cy.wrap($card).should('contain', release).and('contain', rating);
-                });
+                cy.verifyReleaseRating(sorted_movies);
             });
 
             it("displays the 'Add to Favourites' and 'More Info' buttons", () => {

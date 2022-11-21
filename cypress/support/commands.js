@@ -39,3 +39,29 @@ Cypress.Commands.add('addToMustWatch', (indexes) => {
         cy.get("button[aria-label='add to must watch']").eq(indexes[i]).click();
     }
 });
+
+//Checks the correct movie titles are showing in a list page
+Cypress.Commands.add('verifyMovieTitles', (movies) => {
+    cy.get(".MuiCardHeader-content").each(($card, index) => {
+        //Necessary to prevent errors when API returns double spacing.
+        var title = movies[index].title.replace( /\s\s+/g, ' ' );
+        cy.wrap($card).find("p").contains(title);
+    });
+});
+
+//Checks the correct movie posters are showing in a list page
+Cypress.Commands.add('verifyMoviePosters', (movies) => {
+    cy.get(".MuiCardMedia-root").each(($card, index) => {
+        var poster = "https://image.tmdb.org/t/p/w500/" + movies[index].poster_path;
+        cy.wrap($card).should('have.attr', 'style', 'background-image: url("' + poster + '");');
+    });
+});
+
+//Checks the correct movie release date and rating in a list page
+Cypress.Commands.add('verifyReleaseRating', (movies) => {
+    cy.get(".MuiCardContent-root").each(($card, index) => {
+        var release = movies[index].release_date;
+        var rating = movies[index].vote_average;
+        cy.wrap($card).should('contain', release).and('contain', rating);
+    });
+});
