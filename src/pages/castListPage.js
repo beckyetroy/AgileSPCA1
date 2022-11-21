@@ -1,9 +1,9 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { getMovieCredits } from "../api/tmdb-api";
-import PageTemplate from '../components/templateCastListPage';
 import { useQuery } from 'react-query';
-import Spinner from '../components/spinner';
 import { useParams } from 'react-router-dom';
+const PageTemplate = lazy(() => import('../components/templateCastListPage'));
+const Spinner = lazy(() => import('../components/spinner'));
 
 const CastListPage = (props) => {
   const { id } = useParams();
@@ -13,7 +13,11 @@ const CastListPage = (props) => {
   );
 
   if (isLoading) {
-    return <Spinner />
+    return (
+      <Suspense fallback={<h1>Building Spinner</h1>}>
+        <Spinner />
+      </Suspense>
+    );
   }
 
   if (isError) {
@@ -23,10 +27,12 @@ const CastListPage = (props) => {
   const casts = data.cast;
 
   return (
-    <PageTemplate
-      title='Cast'
-      casts={casts}
-    />
+    <Suspense fallback={<h1>Building Page</h1>}>
+      <PageTemplate
+        title='Cast'
+        casts={casts}
+      />
+    </Suspense>
   );
 };
 export default CastListPage;

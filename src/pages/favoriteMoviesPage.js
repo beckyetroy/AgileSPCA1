@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
-import PageTemplate from "../components/templateMovieListPage";
+import React, { useContext, lazy, Suspense } from "react";
 import { MoviesContext } from "../contexts/moviesContext";
 import { useQueries } from "react-query";
 import { getMovie } from "../api/tmdb-api";
-import Spinner from '../components/spinner';
-import RemoveFromFavorites from "../components/cardIcons/removeFromFavorites";
-import WriteReview from "../components/cardIcons/writeReview";
+const PageTemplate = lazy(() => import("../components/templateMovieListPage"));
+const Spinner = lazy(() => import('../components/spinner'));
+const RemoveFromFavorites = lazy(() => import("../components/cardIcons/removeFromFavorites"));
+const WriteReview = lazy(() => import("../components/cardIcons/writeReview"));
 
 const FavoriteMoviesPage = () => {
   const {favorites: movieIds } = useContext(MoviesContext);
@@ -23,7 +23,11 @@ const FavoriteMoviesPage = () => {
   const isLoading = favoriteMovieQueries.find((m) => m.isLoading === true);
 
   if (isLoading) {
-    return <Spinner />;
+    return (
+      <Suspense fallback={<h1>Building Spinner</h1>}>
+        <Spinner />
+      </Suspense>
+    );
   }
 
   const movies = favoriteMovieQueries.map((q) => {
@@ -34,18 +38,20 @@ const FavoriteMoviesPage = () => {
   //const toDo = () => true;
 
   return (
-    <PageTemplate
-      title="Favorite Movies"
-      movies={movies}
-      action={(movie) => {
-        return (
-          <>
-            <RemoveFromFavorites movie={movie} />
-            <WriteReview movie={movie} />
-          </>
-        );
-      }}
-    />
+    <Suspense fallback={<h1>Building Favourites Page</h1>}>
+      <PageTemplate
+        title="Favorite Movies"
+        movies={movies}
+        action={(movie) => {
+          return (
+            <>
+              <RemoveFromFavorites movie={movie} />
+              <WriteReview movie={movie} />
+            </>
+          );
+        }}
+      />
+    </Suspense>
   );
 };
 

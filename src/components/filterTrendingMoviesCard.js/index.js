@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
@@ -12,9 +12,9 @@ import Select from "@mui/material/Select";
 import img from '../../images/pexels-dziana-hasanbekava-5480827.jpg'
 import { getGenres } from "../../api/tmdb-api";
 import { useQuery } from "react-query";
-import Spinner from '../spinner';
 import { useNavigate } from "react-router-dom";
 import Autocomplete from '@mui/material/Autocomplete';
+const Spinner = lazy(() => import('../spinner'));
 
 const formControl = 
   {
@@ -29,7 +29,11 @@ export default function FilterTrendingCard(props) {
   const { data, error, isLoading, isError } = useQuery("genres", getGenres);
 
   if (isLoading) {
-    return <Spinner />;
+    return (
+      <Suspense fallback={<h1>Building Spinner</h1>}>
+        <Spinner />
+      </Suspense>
+    );
   }
 
   if (isError) {
