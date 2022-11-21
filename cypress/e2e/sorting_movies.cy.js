@@ -8,11 +8,9 @@ let mustwatch_movies; // List of movies that have been added to must watch
 let moviesweek; // List of movies trending this week
 let moviesday; // List of movies trending today
 
-let cast; // List of cast members for a particular movie
-let crew; //List of crew members for a particular movie
 var seen = {}; //Used for filtering crew and favorites list 
 
-describe("Sorting", () => {
+describe("Sorting Movies", () => {
     before(() => {
         // Get movies from TMDB and store them locally.
         cy.request(
@@ -37,11 +35,7 @@ describe("Sorting", () => {
             cy.get("li").contains("Alphabetical").click();
             movies = sortItemsSmallFirst(movies, "title");
 
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(movies);
         });
 
         it("Sorts by popularity", () => {
@@ -53,11 +47,7 @@ describe("Sorting", () => {
             cy.get("li").contains("Popularity").click();
             movies = sortItemsLargeFirst(movies, "popularity");
 
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(movies);
         });
 
         it("Sorts by rating", () => {
@@ -65,11 +55,7 @@ describe("Sorting", () => {
             cy.get("li").contains("Rating").click();
             movies = sortItemsLargeFirst(movies, "vote_average");
 
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(movies);
         });
 
         it("Sorts by release date, with newest released first", () => {
@@ -77,11 +63,7 @@ describe("Sorting", () => {
             cy.get("li").contains("Release Date").click();
             movies = sortItemsLargeFirst(movies, "release_date");
 
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(movies);
         });
     });
 
@@ -104,11 +86,7 @@ describe("Sorting", () => {
             cy.get("li").contains("Alphabetical").click();
             favorite_movies = sortItemsSmallFirst(favorite_movies, "title");
 
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = favorite_movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(favorite_movies);
         });
 
         it("Sorts by popularity", () => {
@@ -120,11 +98,7 @@ describe("Sorting", () => {
             cy.get("li").contains("Popularity").click();
             favorite_movies = sortItemsLargeFirst(favorite_movies, "popularity");
 
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = favorite_movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(favorite_movies);
         });
 
         it("Sorts by rating", () => {
@@ -167,11 +141,7 @@ describe("Sorting", () => {
                 return i1.vote_average - i2.vote_average;
             }).reverse();
 
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = favorite_movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(favorite_movies);
         });
 
         it("Sorts by release date, with newest released first", () => {
@@ -179,11 +149,7 @@ describe("Sorting", () => {
             cy.get("li").contains("Release Date").click();
             favorite_movies = sortItemsLargeFirst(favorite_movies, "release_date");
 
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = favorite_movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(favorite_movies);
         });
     });
 
@@ -208,11 +174,7 @@ describe("Sorting", () => {
             cy.get("li").contains("Alphabetical").click();
             movies = sortItemsSmallFirst(movies, "title");
 
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(movies);
         });
 
         it("Sorts by popularity", () => {
@@ -224,11 +186,7 @@ describe("Sorting", () => {
             cy.get("li").contains("Popularity").click();
             movies = sortItemsLargeFirst(movies, "popularity");
 
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(movies);
         });
 
         it("Sorts by rating", () => {
@@ -236,11 +194,7 @@ describe("Sorting", () => {
             cy.get("li").contains("Rating").click();
             movies = sortItemsLargeFirst(movies, "vote_average");
 
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(movies);
         });
 
         it("Sorts by release date, with newest released first", () => {
@@ -248,11 +202,7 @@ describe("Sorting", () => {
             cy.get("li").contains("Release Date").click();
             movies = sortItemsLargeFirst(movies, "release_date");
 
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(movies);
         });
     });
 
@@ -283,11 +233,7 @@ describe("Sorting", () => {
             cy.get("li").contains("Alphabetical").click();
             mustwatch_movies = sortItemsSmallFirst(mustwatch_movies, "title");
 
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = mustwatch_movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(mustwatch_movies);
         });
 
         it("Sorts by popularity", () => {
@@ -299,11 +245,7 @@ describe("Sorting", () => {
             cy.get("li").contains("Popularity").click();
             mustwatch_movies = sortItemsLargeFirst(mustwatch_movies, "popularity");
 
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = mustwatch_movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(mustwatch_movies);
         });
 
         it("Sorts by rating", () => {
@@ -346,11 +288,7 @@ describe("Sorting", () => {
                 return i1.vote_average - i2.vote_average;
             }).reverse();
 
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = mustwatch_movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(mustwatch_movies);
         });
 
         it("Sorts by release date, with newest released first", () => {
@@ -358,11 +296,7 @@ describe("Sorting", () => {
             cy.get("li").contains("Release Date").click();
             mustwatch_movies = sortItemsLargeFirst(mustwatch_movies, "release_date");
 
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = mustwatch_movies[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(mustwatch_movies);
         });
     });
 
@@ -395,11 +329,7 @@ describe("Sorting", () => {
             cy.get("li").contains("Alphabetical").click();
             const moviesweek1 = sortItemsSmallFirst(moviesweek, "title");
 
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = moviesweek1[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(moviesweek1);
         });
 
         it("Sorts by popularity", () => {
@@ -411,11 +341,7 @@ describe("Sorting", () => {
             cy.get("li").contains("Popularity").click();
             const moviesweek2 = sortItemsLargeFirst(moviesweek, "popularity");
 
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = moviesweek2[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(moviesweek2);
         });
 
         it("Sorts by rating", () => {
@@ -423,11 +349,7 @@ describe("Sorting", () => {
             cy.get("li").contains("Rating").click();
             const moviesweek3 = sortItemsLargeFirst(moviesweek, "vote_average");
 
-            cy.get(".MuiCardHeader-content").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var title = moviesweek3[index].title.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("p").contains(title);
-            });
+            cy.verifyMovieTitles(moviesweek3);
         });
 
         describe("Trending Today", () => {
@@ -440,11 +362,7 @@ describe("Sorting", () => {
                 cy.get("li").contains("Alphabetical").click();
                 const moviesday1 = sortItemsSmallFirst(moviesday, "title");
     
-                cy.get(".MuiCardHeader-content").each(($card, index) => {
-                    //Necessary to prevent errors when API returns double spacing.
-                    var title = moviesday1[index].title.replace( /\s\s+/g, ' ' );
-                    cy.wrap($card).find("p").contains(title);
-                });
+                cy.verifyMovieTitles(moviesday1);
             });
     
             it("Sorts by popularity", () => {
@@ -456,11 +374,7 @@ describe("Sorting", () => {
                 cy.get("li").contains("Popularity").click();
                 const moviesday2 = sortItemsLargeFirst(moviesday, "popularity");
     
-                cy.get(".MuiCardHeader-content").each(($card, index) => {
-                    //Necessary to prevent errors when API returns double spacing.
-                    var title = moviesday2[index].title.replace( /\s\s+/g, ' ' );
-                    cy.wrap($card).find("p").contains(title);
-                });
+                cy.verifyMovieTitles(moviesday2);
             });
     
             it("Sorts by rating", () => {
@@ -468,125 +382,7 @@ describe("Sorting", () => {
                 cy.get("li").contains("Rating").click();
                 const moviesday3 = sortItemsLargeFirst(moviesday, "vote_average");
     
-                cy.get(".MuiCardHeader-content").each(($card, index) => {
-                    //Necessary to prevent errors when API returns double spacing.
-                    var title = moviesday3[index].title.replace( /\s\s+/g, ' ' );
-                    cy.wrap($card).find("p").contains(title);
-                });
-            });
-        });
-    });
-
-    describe("The Cast List page", () => {
-
-        before(() => {
-            cy.request(
-                `https://api.themoviedb.org/3/movie/${
-                    movies[0].id
-                }/credits?api_key=${Cypress.env("TMDB_KEY")}`
-                )
-                .its("body")
-                .then((castList) => {
-                    cast = castList.cast;
-                });
-        });
-
-        beforeEach(() => {
-            cy.visit(`/movies/${movies[0].id}/cast`);
-        });
-
-        it("Sorts alphabetically by name", () => {
-            cy.get("#sort-select").click();
-            cy.get("li").contains("Alphabetical").click();
-            cast = sortItemsSmallFirst(cast, "name");
-
-            cy.get(".MuiCardActions-root").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var name = cast[index].name.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("a").contains(name);
-            });
-        });
-
-        it("Sorts by popularity", () => {
-            cy.get("#sort-select").click();
-            cy.get("li").contains("Popularity").click();
-            cast = sortItemsLargeFirst(cast, "popularity");
-
-            cy.get(".MuiCardActions-root").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var name = cast[index].name.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("a").contains(name);
-            });
-        });
-
-        it("Sorts by relevance", () => {
-            //As cast members are already sorted by relevance by default, we will check
-            //if it still sorts by relevance after the filter has been changed
-            cy.get("#sort-select").click();
-            cy.get("li").contains("Alphabetical").click();
-            cy.get("#sort-select").click();
-            cy.get("li").contains("Relevance").click();
-            cast = sortItemsSmallFirst(cast, "order");
-
-            cy.get(".MuiCardActions-root").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var name = cast[index].name.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("a").contains(name);
-            });
-        });
-    });
-
-    describe("The Crew List page", () => {
-
-        before(() => {
-            cy.request(
-                `https://api.themoviedb.org/3/movie/${
-                    movies[0].id
-                }/credits?api_key=${Cypress.env("TMDB_KEY")}`
-                )
-                .its("body")
-                .then((crewList) => {
-                    //Filter Crew List so crew members with multiple jobs are displayed in one person card rather than multiple jobs
-                    crew = crewList.crew.filter(function(entry) {
-                        var previous;
-        
-                        if (seen.hasOwnProperty(entry.id)) {
-                            previous = seen[entry.id];
-                            previous.job = previous.job + ', ' + entry.job;
-                            return false;
-                        }
-        
-                        seen[entry.id] = entry;
-                        return true;
-                    });;
-                });
-        });
-
-        beforeEach(() => {
-            cy.visit(`/movies/${movies[0].id}/crew`);
-        });
-
-        it("Sorts alphabetically by name", () => {
-            cy.get("#sort-select").click();
-            cy.get("li").contains("Alphabetical").click();
-            const crew1 = sortItemsSmallFirst(crew, "name");
-
-            cy.get(".MuiCardActions-root").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var name = crew1[index].name.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("a").contains(name);
-            });
-        });
-
-        it("Sorts by popularity", () => {
-            cy.get("#sort-select").click();
-            cy.get("li").contains("Popularity").click();
-            const crew2 = sortItemsLargeFirst(crew, "popularity");
-
-            cy.get(".MuiCardActions-root").each(($card, index) => {
-                //Necessary to prevent errors when API returns double spacing.
-                var name = crew2[index].name.replace( /\s\s+/g, ' ' );
-                cy.wrap($card).find("a").contains(name);
+                cy.verifyMovieTitles(moviesday3);
             });
         });
     });
