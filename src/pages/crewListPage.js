@@ -1,9 +1,9 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { getMovieCredits } from "../api/tmdb-api";
-import PageTemplate from '../components/templateCrewListPage';
 import { useQuery } from 'react-query';
-import Spinner from '../components/spinner';
 import { useParams } from 'react-router-dom';
+const PageTemplate = lazy(() => import('../components/templateCrewListPage'));
+const Spinner = lazy(() => import('../components/spinner'));
 
 const CrewListPage = (props) => {
   const { id } = useParams();
@@ -13,7 +13,11 @@ const CrewListPage = (props) => {
   );
 
   if (isLoading) {
-    return <Spinner />
+    return (
+      <Suspense fallback={<h1>Building Spinner</h1>}>
+        <Spinner />
+      </Suspense>
+    );
   }
 
   if (isError) {
@@ -35,10 +39,12 @@ const CrewListPage = (props) => {
 });;
 
   return (
-    <PageTemplate
-      title='Crew'
-      crews={crews}
-    />
+    <Suspense fallback={<h1>Building Page</h1>}>
+      <PageTemplate
+        title='Crew'
+        crews={crews}
+      />
+    </Suspense>
   );
 };
 export default CrewListPage;

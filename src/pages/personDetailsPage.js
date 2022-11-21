@@ -1,10 +1,10 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { useParams } from 'react-router-dom';
-import PersonDetails from "../components/personDetails/";
-import PageTemplate from "../components/templatePersonPage";
-import { getPersonDetails } from '../api/tmdb-api'
+import { getPersonDetails } from '../api/tmdb-api';
 import { useQuery } from "react-query";
-import Spinner from '../components/spinner'
+const PersonDetails = lazy(() => import("../components/personDetails/"));
+const PageTemplate = lazy(() => import("../components/templatePersonPage"));
+const Spinner = lazy(() => import ('../components/spinner'));
 
 const PersonPage = (props) => {
   const { id } = useParams();
@@ -14,7 +14,11 @@ const PersonPage = (props) => {
   );
 
   if (isLoading) {
-    return <Spinner />;
+    return (
+      <Suspense fallback={<h1>Building Spinner</h1>}>
+        <Spinner />
+      </Suspense>
+    );
   }
 
   if (isError) {
@@ -25,9 +29,11 @@ const PersonPage = (props) => {
     <>
       {person ? (
         <>
+        <Suspense fallback={<h1>Building Person Details Page</h1>}>
           <PageTemplate person={person} >
             <PersonDetails person={person}/>
           </PageTemplate>
+        </Suspense>
         </>
       ) : (
         <p>Waiting for person details</p>

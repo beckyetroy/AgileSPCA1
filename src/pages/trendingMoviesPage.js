@@ -1,16 +1,20 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { getTrendingMovies } from "../api/tmdb-api";
-import PageTemplate from '../components/templateMovieListPage';
 import { useQuery } from 'react-query';
-import Spinner from '../components/spinner';
-import AddToFavoritesIcon from '../components/cardIcons/addToFavorites';
+const PageTemplate = lazy(() => import('../components/templateMovieListPage'));
+const Spinner = lazy(() => import('../components/spinner'));
+const AddToFavoritesIcon = lazy(() => import('../components/cardIcons/addToFavorites'));
 
 const TrendingMoviesPageWeek = (props) => {
   const time = "week";
   const {  data, error, isLoading, isError }  = useQuery('discoverTrendingThisWeek', () => getTrendingMovies(time));
 
   if (isLoading) {
-    return <Spinner />
+    return (
+      <Suspense fallback={<h1>Building Spinner</h1>}>
+        <Spinner />
+      </Suspense>
+    );
   }
 
   if (isError) {
@@ -24,13 +28,15 @@ const TrendingMoviesPageWeek = (props) => {
   //const addToFavorites = (movieId) => true
 
   return (
-    <PageTemplate
-      title='Trending This Week'
-      movies={movies}
-      action={(movie) => {
-        return <AddToFavoritesIcon movie={movie} />
-      }}
-    />
+    <Suspense fallback={<h1>Building Trending Movies Page</h1>}>
+      <PageTemplate
+        title='Trending This Week'
+        movies={movies}
+        action={(movie) => {
+          return <AddToFavoritesIcon movie={movie} />
+        }}
+      />
+    </Suspense>
   );
 };
 
@@ -39,7 +45,11 @@ const TrendingMoviesPageDay = (props) => {
   const {  data, error, isLoading, isError }  = useQuery('discoverTrendingToday', () => getTrendingMovies(time));
 
   if (isLoading) {
-    return <Spinner />
+    return (
+      <Suspense fallback={<h1>Building Spinner</h1>}>
+        <Spinner />
+      </Suspense>
+    );
   }
 
   if (isError) {
@@ -53,13 +63,15 @@ const TrendingMoviesPageDay = (props) => {
   //const addToFavorites = (movieId) => true
 
   return (
-    <PageTemplate
-      title='Trending Today'
-      movies={movies}
-      action={(movie) => {
-        return <AddToFavoritesIcon movie={movie} />
-      }}
-    />
+    <Suspense fallback={<h1>Building Trending Movies Page</h1>}>
+      <PageTemplate
+        title='Trending Today'
+        movies={movies}
+        action={(movie) => {
+          return <AddToFavoritesIcon movie={movie} />
+        }}
+      />
+    </Suspense>
   );
 };
 export { TrendingMoviesPageWeek, TrendingMoviesPageDay};

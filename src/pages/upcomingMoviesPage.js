@@ -1,16 +1,20 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { getUpcomingMovies } from "../api/tmdb-api";
-import PageTemplate from '../components/templateMovieListPage';
 import { useQuery } from 'react-query';
-import Spinner from '../components/spinner';
-import AddToMustWatch from "../components/cardIcons/addToMustWatch";
+const PageTemplate = lazy(() => import('../components/templateMovieListPage'));
+const Spinner = lazy(() => import('../components/spinner'));
+const AddToMustWatch = lazy(() => import( "../components/cardIcons/addToMustWatch"));
 
 const UpcomingMoviesPage = (props) => {
 
   const {  data, error, isLoading, isError }  = useQuery('discoverUpcoming', getUpcomingMovies)
 
   if (isLoading) {
-    return <Spinner />
+    return (
+      <Suspense fallback={<h1>Building Spinner</h1>}>
+        <Spinner />
+      </Suspense>
+    );
   }
 
   if (isError) {
@@ -24,13 +28,15 @@ const UpcomingMoviesPage = (props) => {
   //const addToMustWatch = (movieId) => true 
 
   return (
-    <PageTemplate
-      title='Upcoming Movies'
-      movies={movies}
-      action={(movie) => {
-        return <AddToMustWatch movie={movie} />
-      }}
-    />
+    <Suspense fallback={<h1>Building Upcoming Movies Page</h1>}>
+      <PageTemplate
+        title='Upcoming Movies'
+        movies={movies}
+        action={(movie) => {
+          return <AddToMustWatch movie={movie} />
+        }}
+      />
+    </Suspense>
   );
 };
 export default UpcomingMoviesPage;
