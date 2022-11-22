@@ -4,7 +4,7 @@ image: node:latest
 stages:
   - install
   - build
-  - test
+  # - test
   - deploy
 
 variables:
@@ -34,15 +34,15 @@ bundle_app:
     paths:
       - build/
 
-e2etest:
-# Node docker image with Cypress and Chrome pre-installed
-  image: cypress/browsers:node12.14.1-chrome85-ff81
-  stage: test
-  only:
-    - main
-  script:
-    - echo "Run tests in headless mode"
-    - npm run start:ci
+# e2etest:
+# # Node docker image with Cypress and Chrome pre-installed
+#   image: cypress/browsers:node12.14.1-chrome85-ff81
+#   stage: test
+#   only:
+#     - main
+#   script:
+#     - echo "Run tests in headless mode"
+#     - npm run start:ci
 
 deploy:
   stage: deploy
