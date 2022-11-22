@@ -95,7 +95,11 @@ seen in the following file:
 
 + .gitlab-ci.yml
 
-Unfortunately I wasn't able to test this implementation as the pipeline ran out of minutes before I could fix all bugs in
-my testing stage. But I attach screenshots of the S3 bucket and CloudFormation. 
+Unfortunately I wasn't able to get this functionality working. But I attach screenshots of the S3 bucket and CloudFront
+configured, as well as the AWS variables that were added to the Gitlab project as proof of my effort.
+
+![](./images/AWSVariablesConfiguredOnGitlab.png)
+![](./images/CloudFrontAWS.png)
+![](./images/S3Bucket.png)
 
 Throughout this assignment, I also learned and utilised many new Cypress commands.
