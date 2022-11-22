@@ -128,8 +128,8 @@ describe("The favourites feature", () => {
         it("movies are removed from favourites", () => {
             //Press the Delete Button
             cy.get(".MuiCardActions-root")
-                .eq(0)
                 .find("button[aria-label='remove from favorites']")
+                .eq(0)
                 .click();
 
             //Verify it has been removed from the page

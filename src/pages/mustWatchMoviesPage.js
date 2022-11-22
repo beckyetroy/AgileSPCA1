@@ -2,8 +2,8 @@ import React, { useContext, lazy, Suspense} from "react";
 import { MoviesContext } from "../contexts/moviesContext";
 import { useQueries } from "react-query";
 import { getMovie } from "../api/tmdb-api";
+import Spinner from '../components/spinner';
 const PageTemplate = lazy(() => import("../components/templateMovieListPage"));
-const Spinner = lazy(() => import('../components/spinner'));
 const RemoveFromMustWatch = lazy(() => import("../components/cardIcons/removeFromMustWatch"));
 
 const MustWatchMoviesPage = () => {
@@ -23,9 +23,7 @@ const MustWatchMoviesPage = () => {
 
   if (isLoading) {
     return (
-      <Suspense fallback={<h1>Building Spinner</h1>}>
-        <Spinner />
-      </Suspense>
+      <Spinner />
     );
   }
 

@@ -1,9 +1,9 @@
 import React, { lazy, Suspense } from "react";
 import { getMovies } from "../api/tmdb-api";
 import { useQuery } from 'react-query';
+import Spinner from '../components/spinner';
+import AddToFavoritesIcon from "../components/cardIcons/addToFavorites";
 const PageTemplate = lazy(() => import('../components/templateMovieListPage'));
-const Spinner = lazy(() => import( '../components/spinner'));
-const AddToFavoritesIcon = lazy(() => import('../components/cardIcons/addToFavorites'));
 
 const HomePage = (props) => {
 
@@ -11,9 +11,7 @@ const HomePage = (props) => {
 
   if (isLoading) {
     return (
-      <Suspense fallback={<h1>Building Spinner</h1>}>
-        <Spinner />
-      </Suspense>
+      <Spinner />
     );
   }
 

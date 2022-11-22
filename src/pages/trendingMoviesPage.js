@@ -1,9 +1,9 @@
 import React, { lazy, Suspense } from "react";
 import { getTrendingMovies } from "../api/tmdb-api";
 import { useQuery } from 'react-query';
+import Spinner from '../components/spinner';
+import AddToFavoritesIcon from "../components/cardIcons/addToFavorites";
 const PageTemplate = lazy(() => import('../components/templateMovieListPage'));
-const Spinner = lazy(() => import('../components/spinner'));
-const AddToFavoritesIcon = lazy(() => import('../components/cardIcons/addToFavorites'));
 
 const TrendingMoviesPageWeek = (props) => {
   const time = "week";
@@ -11,9 +11,7 @@ const TrendingMoviesPageWeek = (props) => {
 
   if (isLoading) {
     return (
-      <Suspense fallback={<h1>Building Spinner</h1>}>
-        <Spinner />
-      </Suspense>
+      <Spinner />
     );
   }
 
@@ -46,9 +44,7 @@ const TrendingMoviesPageDay = (props) => {
 
   if (isLoading) {
     return (
-      <Suspense fallback={<h1>Building Spinner</h1>}>
-        <Spinner />
-      </Suspense>
+      <Spinner />
     );
   }
 

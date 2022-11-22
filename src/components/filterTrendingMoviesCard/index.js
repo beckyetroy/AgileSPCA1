@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React from "react";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
@@ -14,7 +14,7 @@ import { getGenres } from "../../api/tmdb-api";
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import Autocomplete from '@mui/material/Autocomplete';
-const Spinner = lazy(() => import('../spinner'));
+import Spinner from '../spinner';
 
 const formControl = 
   {
@@ -30,9 +30,7 @@ export default function FilterTrendingCard(props) {
 
   if (isLoading) {
     return (
-      <Suspense fallback={<h1>Building Spinner</h1>}>
-        <Spinner />
-      </Suspense>
+      <Spinner />
     );
   }
 

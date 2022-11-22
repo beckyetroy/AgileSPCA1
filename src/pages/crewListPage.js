@@ -2,8 +2,8 @@ import React, { lazy, Suspense } from "react";
 import { getMovieCredits } from "../api/tmdb-api";
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
+import Spinner from '../components/spinner';
 const PageTemplate = lazy(() => import('../components/templateCrewListPage'));
-const Spinner = lazy(() => import('../components/spinner'));
 
 const CrewListPage = (props) => {
   const { id } = useParams();
@@ -14,9 +14,7 @@ const CrewListPage = (props) => {
 
   if (isLoading) {
     return (
-      <Suspense fallback={<h1>Building Spinner</h1>}>
-        <Spinner />
-      </Suspense>
+      <Spinner />
     );
   }
 

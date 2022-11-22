@@ -2,9 +2,9 @@ import React, { lazy, Suspense } from "react";
 import { useParams } from 'react-router-dom';
 import { getPersonDetails } from '../api/tmdb-api';
 import { useQuery } from "react-query";
+import Spinner from '../components/spinner';
 const PersonDetails = lazy(() => import("../components/personDetails/"));
 const PageTemplate = lazy(() => import("../components/templatePersonPage"));
-const Spinner = lazy(() => import ('../components/spinner'));
 
 const PersonPage = (props) => {
   const { id } = useParams();
@@ -15,9 +15,7 @@ const PersonPage = (props) => {
 
   if (isLoading) {
     return (
-      <Suspense fallback={<h1>Building Spinner</h1>}>
-        <Spinner />
-      </Suspense>
+      <Spinner />
     );
   }
 

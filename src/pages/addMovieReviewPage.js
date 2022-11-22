@@ -2,9 +2,9 @@ import React, { lazy, Suspense } from "react";
 import { useLocation } from "react-router-dom";
 import { useQuery } from "react-query";
 import { getMovie } from "../api/tmdb-api";
+import Spinner from '../components/spinner';
 const PageTemplate = lazy(() => import("../components/templateMoviePage"));
 const ReviewForm = lazy(() => import("../components/reviewForm"));
-const Spinner = lazy(() => import("../components/spinner"));
 
 const WriteReviewPage = (props) => {
   const location = useLocation();
@@ -17,9 +17,7 @@ const WriteReviewPage = (props) => {
 
   if (isLoading) {
     return (
-      <Suspense fallback={<h1>Building Spinner</h1>}>
-        <Spinner />
-      </Suspense>
+      <Spinner />
     );
   }
 
