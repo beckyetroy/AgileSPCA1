@@ -26,20 +26,33 @@ to 'Favorites'
 + New MUI Components rating, carousel, autocomplete
 
 ## Automated Tests.
-+ cypress/e2e/base_movie.cy.js - tests the rendering, display, and navigation of 
-+ cypress/e2e/filtering.cy.js
++ cypress/e2e/base_movie.cy.js - tests the rendering, display, and navigation of the Movie Details Page, the Review Details
+Page / List view, the Cast List Page, the Crew List Page, and the Person Details Page.
++ cypress/e2e/base_movies.cy.js - tests the rendering, display, and navigation of the Discover Movies page, the Favourites
+Page, the Upcoming Movies Page, the Must Watch Page, and the Trending Page.
++ cypress/e2e/favorites.cy.js - tests the full functionality of the favorites feature.
++ cypress/e2e/filtering_movies.cy.js - tests the full functionality of filtering through the Discover Movies page, the Favourites
+Page, the Upcoming Movies page, the Must Watch page, and the Trending Movies Page.
++ cypress/e2e/filtering_people.cy.js - tests the full functionality of filtering through the Cast List page and the Crew List
+page.
++ cypress/e2e/mustwatch.cy.js - tests the full functionality of the favorites feature.
++ cypress/e2e/pagination.cy.js - tests the full functionality of the pagination feature on the Discover Movies page, the Upcoming Movies page, the Trending Movies Pag, the Cast List page, and the Crew List page.
++ cypress/e2e/sorting_movies.cy.js - tests the full functionality of sorting movies on the Discover Movies page, the Favourites
+Page, the Upcoming Movies page, the Must Watch page, and the Trending Movies Page.
++ cypress/e2e/sorting_people.cy.js - tests the full functionality of sorting movies on the Cast List page and the Crew List
+page.
 
 ### Best test cases.
 
-[ State the pathnames of the __two__ (only) test file that best represents your knowledge and understanding of Cypress testing code.]
+Below lists the pathnames of the two test files I feel best represent my knowledge and understanding of Cypress testing code. I
+chose these as they particularly demonstrate Error/Exception handling, nested test case structure, and thorough functionality.
 
-e.g.
-+ cypress/e2e/filtering.cy.js
-+ cypress/e2e/favourites.cy.js
++ cypress/e2e/filtering_movies.cy.js
++ cypress/e2e/mustwatch.cy.js
 
-### Cypress Custom commands (if relevant).
+### Cypress Custom commands.
 
-[ Specify the test file(s) that use a custom Cypress command(s) that you implemented.]
+The following files make use of Cypress custom commands:
 
 e.g.
 + cypress/e2e/filtering.cy.js
@@ -47,12 +60,22 @@ e.g.
 
 ## Code Splitting.
 
-[Specify the pathname of each the file that contains evidence of code splitting in your React app.]
+Below lists the pathnames of each file which contains evidence of code 
+splitting in the app. I carried out this everywhere applicable for my app.
 
-e.g.
 + src/index.js
-+ src/pages/favouriteMoviesPage.js
-+ src/components/movieCard/index.js
++ src/components/filterTrendingMoviesCard/index.js
++ src/pages/addMovieReviewPage.js
++ src/pages/castListPage.js
++ src/pages/crewListPage.js
++ src/pages/favoriteMoviesPage.js
++ src/pages/homePage.js
++ src/pages/movieDetailsPage.js
++ src/pages/movieReviewPage.js
++ src/pages/mustWatchMoviesPage.js
++ src/pages/personDetailsPage.js
++ src/pages/trendingMoviesPage.js
++ src/pages/upcomingMoviesPage.js
 
 ## Pull Requests.
 
