@@ -54,9 +54,11 @@ chose these as they particularly demonstrate Error/Exception handling, nested te
 
 The following files make use of Cypress custom commands:
 
-e.g.
-+ cypress/e2e/filtering.cy.js
-+ cypress/e2e/favourites.cy.js
++ cypress/e2e/favorites.cy.js
++ cypress/e2e/filtering_movies.cy.js
++ cypress/e2e/mustwatch.cy.js
++ cypress/e2e/sorting.cy.js
++ cypress/e2e/base_movies.cy.js
 
 ## Code Splitting.
 
@@ -79,12 +81,21 @@ splitting in the app. I carried out this everywhere applicable for my app.
 
 ## Pull Requests.
 
-[ Specify the URL of the GitHub repository that contains a record of Pull Requests for the React App.]
+[The following URL](https://github.com/beckyetroy/AgileSPCA1)
+contains the Github repository with my own code that I have merged 2 Pull Requests from.
 
-## Independent learning (If relevant).
+[The following URL](https://github.com/Bobbins228/agile-soft-assignment-1)
+contains the Github repository I have made 2 Pull Requests to.
 
-[ Briefly explain the work you did to satisfy the requirements of the Outstanding grade category, and include proof (e.g. screenshots) of its success. Also, mention the files that contain evidence of this work.
+## Independent learning.
 
-![](./images/sample.png)
+I set up the configuration for auto-deployment of the web app to an AWS S3 bucket. I achieved this with the help of the
+[following guide.](https://gist.github.com/johndavedecano/da2939873c105690af6cf0f65ad9fddd) and the configuration can be
+seen in the following file:
 
-State any other evidence of independent learning achieved while completing this assignment.
++ .gitlab-ci.yml
+
+Unfortunately I wasn't able to test this implementation as the pipeline ran out of minutes before I could fix all bugs in
+my testing stage. But I attach screenshots of the S3 bucket and CloudFormation. 
+
+Throughout this assignment, I also learned and utilised many new Cypress commands.
