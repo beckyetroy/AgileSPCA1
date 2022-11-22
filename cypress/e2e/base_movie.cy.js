@@ -437,12 +437,12 @@ describe("Base tests for pages concerned with a single movie", () => {
                 //displays the default 'Biography unavailable' message
                 if (castMember.biography) {
                     var biography = castMember.name.replace( /\s\s+/g, ' ' );
-                    cy.get("h3").eq(1).contains("Biography");
+                    cy.get(".MuiGrid-root.MuiGrid-item").eq(1).find("h3").contains("Biography");
                     cy.get("p").contains(biography);
                 }
                 else {
                     var name = castMember.name.replace( /\s\s+/g, ' ' );
-                    cy.get("h3").eq(1).contains("Biography for " + name + " unavailable");
+                    cy.get(".MuiGrid-root.MuiGrid-item").eq(1).find("h3").contains("Biography for " + name + " unavailable");
                 }
             });
 
@@ -530,12 +530,12 @@ describe("Base tests for pages concerned with a single movie", () => {
                 //displays the default 'Biography unavailable' message
                 if (crewMember.biography) {
                     var biography = crewMember.name.replace( /\s\s+/g, ' ' );
-                    cy.get("h3").eq(1).contains("Biography");
+                    cy.get(".MuiGrid-root.MuiGrid-item").eq(1).find("h3").contains("Biography");
                     cy.get("p").contains(biography);
                 }
                 else {
                     var name = crewMember.name.replace( /\s\s+/g, ' ' );
-                    cy.get("h3").eq(1).contains("Biography for " + name + " unavailable");
+                    cy.get(".MuiGrid-root.MuiGrid-item").eq(1).find("h3").contains("Biography for " + name + " unavailable");
                 }
             });
 
