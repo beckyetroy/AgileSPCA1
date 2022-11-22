@@ -4,8 +4,8 @@ import { useQueries } from "react-query";
 import { getMovie } from "../api/tmdb-api";
 import Spinner from '../components/spinner';
 import RemoveFromFavorites from "../components/cardIcons/removeFromFavorites";
+import WriteReview from "../components/cardIcons/writeReview";
 const PageTemplate = lazy(() => import("../components/templateMovieListPage"));
-const WriteReview = lazy(() => import("../components/cardIcons/writeReview"));
 
 const FavoriteMoviesPage = () => {
   const {favorites: movieIds } = useContext(MoviesContext);

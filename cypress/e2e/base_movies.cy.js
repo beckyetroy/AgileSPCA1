@@ -37,11 +37,11 @@ describe("Base tests for pages with multiple movies", () => {
             .within(() => {
                 cy.get("h1").contains("Filter Movies");
                 //Check if Input and Select fields are as expected
-                cy.get("#filled-search").should('have.class',
+                cy.get("[id='filled-search']").should('have.class',
                     "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
-                cy.get("#genre-select").should('have.class',
+                cy.get("[id='genre-select']").should('have.class',
                     "MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused");
-                cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
+                cy.get("[id='sort-select']").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
                 //Check if Movies are sorted by popularity by default
                 .contains("Popularity");
             });
@@ -87,11 +87,11 @@ describe("Base tests for pages with multiple movies", () => {
             .within(() => {
                 cy.get("h1").contains("Filter Movies");
                 //Check if Input and Select fields are as expected
-                cy.get("#filled-search").should('have.class',
+                cy.get("[id='filled-search']").should('have.class',
                     "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
-                cy.get("#genre-select").should('have.class',
+                cy.get("[id='genre-select']").should('have.class',
                     "MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused");
-                cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
+                cy.get("[id='sort-select']").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
                 //Check if Movies are sorted by popularity by default
                 .contains("Popularity");
             });
@@ -128,11 +128,11 @@ describe("Base tests for pages with multiple movies", () => {
             .within(() => {
                 cy.get("h1").contains("Filter Movies");
                 //Check if Input and Select fields are as expected
-                cy.get("#filled-search").should('have.class',
+                cy.get("[id='filled-search']").should('have.class',
                     "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
-                cy.get("#genre-select").should('have.class',
+                cy.get("[id='genre-select']").should('have.class',
                     "MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused");
-                cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
+                cy.get("[id='sort-select']").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
                 //Check if Movies are sorted by popularity by default
                 .contains("Popularity");
             });
@@ -178,11 +178,11 @@ describe("Base tests for pages with multiple movies", () => {
             .within(() => {
                 cy.get("h1").contains("Filter Movies");
                 //Check if Input and Select fields are as expected
-                cy.get("#filled-search").should('have.class',
+                cy.get("[id='filled-search']").should('have.class',
                     "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
-                cy.get("#genre-select").should('have.class',
+                cy.get("[id='genre-select']").should('have.class',
                     "MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused");
-                cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
+                cy.get("[id='sort-select']").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
                 //Check if Movies are sorted by popularity by default
                 .contains("Popularity");
             });
@@ -217,14 +217,14 @@ describe("Base tests for pages with multiple movies", () => {
             .within(() => {
                 cy.get("h1").contains("Filter Movies");
                 //Check if Input and Select fields are as expected
-                cy.get("#filled-search").should('have.class',
+                cy.get("[id='filled-search']").should('have.class',
                     "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
                 cy.get("#time-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
                 //Check if Trending is set to this week
                 .contains("This Week");
-                cy.get("#genre-select").should('have.class',
+                cy.get("[id='genre-select']").should('have.class',
                     "MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused");
-                cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
+                cy.get("[id='sort-select']").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
                 //Check if Movies are sorted by popularity by default
                 .contains("Popularity");
             });

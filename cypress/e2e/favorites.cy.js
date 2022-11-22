@@ -57,6 +57,7 @@ describe("The favourites feature", () => {
             // Select two favourites and navigate to Favourites page
             cy.addToFavourites([1,3]);
             cy.get("button").contains("Favorites").click();
+            cy.url().should('eq', 'http://localhost:3000/movies/favorites');
         });
 
         it("only the tagged movies are listed, sorted by popularity", () => {
@@ -183,8 +184,15 @@ describe("The 'write review' feature", () => {
         cy.addToFavourites([1]);
         cy.get("button").contains("Favorites").click();
         // Navigate to the 'write review' form
-        cy.get('.MuiCardActions-root').find('svg').eq(1)
-            .should('have.attr', 'data-testid', 'RateReviewIcon').click();
+        cy.get(".MuiGrid-root.MuiGrid-container")
+            .eq(1)
+            .find(".MuiGrid-root.MuiGrid-item")
+            .eq(1)
+            .within(() => {
+                cy.get(".MuiCardActions-root").within(() => {
+                    cy.get("a[href='/reviews/form']").click();
+                });
+            });
     });
 
     describe("Form base tests", () => {
@@ -274,8 +282,8 @@ describe("The 'write review' feature", () => {
             cy.get("#review").type("This movie was brilliant!");
             //Clearing the form
             cy.get(".MuiBox-root").find("button").eq(1).click();
-            cy.get('#author').should('have.value', '');
-            cy.get('#review').should('have.value', '');
+            cy.get("[id='author']").should('have.value', '');
+            cy.get("[id='review']").should('have.value', '');
         });
 
         describe("Valid form submission", () => {

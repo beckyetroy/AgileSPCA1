@@ -3,8 +3,8 @@ import { MoviesContext } from "../contexts/moviesContext";
 import { useQueries } from "react-query";
 import { getMovie } from "../api/tmdb-api";
 import Spinner from '../components/spinner';
+import RemoveFromMustWatch from '../components/cardIcons/removeFromMustWatch'
 const PageTemplate = lazy(() => import("../components/templateMovieListPage"));
-const RemoveFromMustWatch = lazy(() => import("../components/cardIcons/removeFromMustWatch"));
 
 const MustWatchMoviesPage = () => {
   const {mustWatch: movieIds } = useContext(MoviesContext);

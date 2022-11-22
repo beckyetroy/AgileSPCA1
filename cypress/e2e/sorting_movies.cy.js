@@ -31,7 +31,8 @@ describe("Sorting Movies", () => {
         });
 
         it("Sorts alphabetically by title", () => {
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']");
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Alphabetical").click();
             movies = sortItemsSmallFirst(movies, "title");
 
@@ -41,9 +42,10 @@ describe("Sorting Movies", () => {
         it("Sorts by popularity", () => {
             //As movies are already sorted by popularity by default and this is checked in
             //base tests, we will check if it still sorts by popularity after the filter has been changed
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']");
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Alphabetical").click();
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Popularity").click();
             movies = sortItemsLargeFirst(movies, "popularity");
 
@@ -51,7 +53,8 @@ describe("Sorting Movies", () => {
         });
 
         it("Sorts by rating", () => {
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']");
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Rating").click();
             movies = sortItemsLargeFirst(movies, "vote_average");
 
@@ -59,7 +62,8 @@ describe("Sorting Movies", () => {
         });
 
         it("Sorts by release date, with newest released first", () => {
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']");
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Release Date").click();
             movies = sortItemsLargeFirst(movies, "release_date");
 
@@ -82,7 +86,8 @@ describe("Sorting Movies", () => {
         });
 
         it("Sorts alphabetically by title", () => {
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']");
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Alphabetical").click();
             favorite_movies = sortItemsSmallFirst(favorite_movies, "title");
 
@@ -92,9 +97,10 @@ describe("Sorting Movies", () => {
         it("Sorts by popularity", () => {
             //As movies are already sorted by popularity by default and this is checked in
             //base tests, we will check if it still sorts by popularity after the filter has been changed
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']");
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Alphabetical").click();
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Popularity").click();
             favorite_movies = sortItemsLargeFirst(favorite_movies, "popularity");
 
@@ -102,7 +108,8 @@ describe("Sorting Movies", () => {
         });
 
         it("Sorts by rating", () => {
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']");
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Rating").click();
             favorite_movies = sortItemsLargeFirst(favorite_movies, "vote_average");
             //If ratings are the same, more accurate ratings are needed
@@ -145,7 +152,8 @@ describe("Sorting Movies", () => {
         });
 
         it("Sorts by release date, with newest released first", () => {
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']");
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Release Date").click();
             favorite_movies = sortItemsLargeFirst(favorite_movies, "release_date");
 
@@ -170,7 +178,8 @@ describe("Sorting Movies", () => {
         });
     
         it("Sorts alphabetically by title", () => {
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']");
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Alphabetical").click();
             movies = sortItemsSmallFirst(movies, "title");
 
@@ -180,9 +189,10 @@ describe("Sorting Movies", () => {
         it("Sorts by popularity", () => {
             //As movies are already sorted by popularity by default and this is checked in
             //base tests, we will check if it still sorts by popularity after the filter has been changed
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']");
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Alphabetical").click();
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Popularity").click();
             movies = sortItemsLargeFirst(movies, "popularity");
 
@@ -190,7 +200,8 @@ describe("Sorting Movies", () => {
         });
 
         it("Sorts by rating", () => {
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']");
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Rating").click();
             movies = sortItemsLargeFirst(movies, "vote_average");
 
@@ -198,7 +209,8 @@ describe("Sorting Movies", () => {
         });
 
         it("Sorts by release date, with newest released first", () => {
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']");
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Release Date").click();
             movies = sortItemsLargeFirst(movies, "release_date");
 
@@ -229,7 +241,8 @@ describe("Sorting Movies", () => {
         });
 
         it("Sorts alphabetically by title", () => {
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']");
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Alphabetical").click();
             mustwatch_movies = sortItemsSmallFirst(mustwatch_movies, "title");
 
@@ -239,9 +252,10 @@ describe("Sorting Movies", () => {
         it("Sorts by popularity", () => {
             //As movies are already sorted by popularity by default and this is checked in
             //base tests, we will check if it still sorts by popularity after the filter has been changed
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']");
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Alphabetical").click();
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Popularity").click();
             mustwatch_movies = sortItemsLargeFirst(mustwatch_movies, "popularity");
 
@@ -249,7 +263,8 @@ describe("Sorting Movies", () => {
         });
 
         it("Sorts by rating", () => {
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']");
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Rating").click();
             mustwatch_movies = sortItemsLargeFirst(mustwatch_movies, "vote_average");
             //If ratings are the same, more accurate ratings are needed
@@ -292,7 +307,8 @@ describe("Sorting Movies", () => {
         });
 
         it("Sorts by release date, with newest released first", () => {
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']");
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Release Date").click();
             mustwatch_movies = sortItemsLargeFirst(mustwatch_movies, "release_date");
 
@@ -325,7 +341,8 @@ describe("Sorting Movies", () => {
         });
 
         it("Sorts alphabetically by title", () => {
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']");
+            cy.get("[id='sort-select']").click({force: true}).
             cy.get("li").contains("Alphabetical").click();
             const moviesweek1 = sortItemsSmallFirst(moviesweek, "title");
 
@@ -335,9 +352,10 @@ describe("Sorting Movies", () => {
         it("Sorts by popularity", () => {
             //As movies are already sorted by popularity by default and this is checked in
             //base tests, we will check if it still sorts by popularity after the filter has been changed
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']");
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Alphabetical").click();
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Popularity").click();
             const moviesweek2 = sortItemsLargeFirst(moviesweek, "popularity");
 
@@ -345,7 +363,8 @@ describe("Sorting Movies", () => {
         });
 
         it("Sorts by rating", () => {
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']");
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Rating").click();
             const moviesweek3 = sortItemsLargeFirst(moviesweek, "vote_average");
 
@@ -358,7 +377,8 @@ describe("Sorting Movies", () => {
             });
             
             it("Sorts alphabetically by title", () => {
-                cy.get("#sort-select").click();
+                cy.get("[id='sort-select']");
+                cy.get("[id='sort-select']").click();
                 cy.get("li").contains("Alphabetical").click();
                 const moviesday1 = sortItemsSmallFirst(moviesday, "title");
     
@@ -368,9 +388,10 @@ describe("Sorting Movies", () => {
             it("Sorts by popularity", () => {
                 //As movies are already sorted by popularity by default and this is checked in
                 //base tests, we will check if it still sorts by popularity after the filter has been changed
-                cy.get("#sort-select").click();
+                cy.get("[id='sort-select']");
+                cy.get("[id='sort-select']").click();
                 cy.get("li").contains("Alphabetical").click();
-                cy.get("#sort-select").click();
+                cy.get("[id='sort-select']").click();
                 cy.get("li").contains("Popularity").click();
                 const moviesday2 = sortItemsLargeFirst(moviesday, "popularity");
     
@@ -378,7 +399,8 @@ describe("Sorting Movies", () => {
             });
     
             it("Sorts by rating", () => {
-                cy.get("#sort-select").click();
+                cy.get("[id='sort-select']");
+                cy.get("[id='sort-select']").click();
                 cy.get("li").contains("Rating").click();
                 const moviesday3 = sortItemsLargeFirst(moviesday, "vote_average");
     

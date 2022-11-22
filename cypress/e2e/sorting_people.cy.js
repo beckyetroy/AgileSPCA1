@@ -38,7 +38,7 @@ describe("Sorting People", () => {
         });
 
         it("Sorts alphabetically by name", () => {
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Alphabetical").click();
             cast = sortItemsSmallFirst(cast, "name");
 
@@ -50,7 +50,7 @@ describe("Sorting People", () => {
         });
 
         it("Sorts by popularity", () => {
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Popularity").click();
             cast = sortItemsLargeFirst(cast, "popularity");
 
@@ -64,9 +64,9 @@ describe("Sorting People", () => {
         it("Sorts by relevance", () => {
             //As cast members are already sorted by relevance by default, we will check
             //if it still sorts by relevance after the filter has been changed
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Alphabetical").click();
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Relevance").click();
             cast = sortItemsSmallFirst(cast, "order");
 
@@ -109,7 +109,7 @@ describe("Sorting People", () => {
         });
 
         it("Sorts alphabetically by name", () => {
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Alphabetical").click();
             const crew1 = sortItemsSmallFirst(crew, "name");
 
@@ -121,7 +121,7 @@ describe("Sorting People", () => {
         });
 
         it("Sorts by popularity", () => {
-            cy.get("#sort-select").click();
+            cy.get("[id='sort-select']").click();
             cy.get("li").contains("Popularity").click();
             const crew2 = sortItemsLargeFirst(crew, "popularity");
 

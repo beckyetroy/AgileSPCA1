@@ -244,13 +244,13 @@ describe("Base tests for pages concerned with a single movie", () => {
             .within(() => {
                 cy.get("h1").contains("Search Cast");
                 //Check if Input and Select fields are as expected
-                cy.get("#filled-search").eq(0).should('have.class',
+                cy.get("[id='filled-search']").eq(0).should('have.class',
                     "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
                 cy.get(".MuiFormControl-root").eq(0).find('label').contains('By Actor');
                 cy.get("input").eq(1).should('have.class',
                     "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
                 cy.get(".MuiFormControl-root").eq(1).find('label').contains('By Character');
-                cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
+                cy.get("[id='sort-select']").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
                 //Check if Movies are sorted by popularity by default
                 .contains("Relevance");
                 cy.get(".MuiFormControl-root").eq(2).find('label').contains('Sort By');
@@ -344,13 +344,13 @@ describe("Base tests for pages concerned with a single movie", () => {
             .within(() => {
                 cy.get("h1").contains("Search Crew");
                 //Check if Input and Select fields are as expected
-                cy.get("#filled-search").eq(0).should('have.class',
+                cy.get("[id='filled-search']").eq(0).should('have.class',
                     "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
                 cy.get(".MuiFormControl-root").eq(0).find('label').contains('By Name');
                 cy.get("input").eq(1).should('have.class',
                     "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
                 cy.get(".MuiFormControl-root").eq(1).find('label').contains('By Job');
-                cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
+                cy.get("[id='sort-select']").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
                 .contains("Default");
                 cy.get(".MuiFormControl-root").eq(2).find('label').contains('Sort By');
             });

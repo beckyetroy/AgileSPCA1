@@ -25,6 +25,9 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 //Add the movies at the specified indexes to favourites
+
+import 'cypress-wait-until';
+
 Cypress.Commands.add('addToFavourites', (indexes) => {
     let i;
     for (i = 0; i < indexes.length; i++) {

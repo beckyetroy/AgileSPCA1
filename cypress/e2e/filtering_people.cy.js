@@ -41,7 +41,7 @@ describe("Filtering People", () => {
             it("only display cast members with 'm' in their name", () => {
                 const searchString = "m";
                 const matchingPeople = filterByName(cast, searchString);
-                cy.get("#filled-search").eq(0).clear().type(searchString); // Enter m in text box
+                cy.get(".MuiFormControl-root").eq(0).find(".MuiInputBase-root").find("input").clear().type(searchString); // Enter m in text box
                 if (matchingPeople.length > 0) {
                     cy.get(".MuiCardActions-root").each(($card, index) => {
                         cy.wrap($card).find("a").contains(matchingPeople[index].name);
@@ -53,7 +53,7 @@ describe("Filtering People", () => {
 
             it("displays nothing when no people match", () => {
                 const searchString = "xxxzy";
-                cy.get("#filled-search").clear().type(searchString); // Enter m in text box
+                cy.get(".MuiFormControl-root").eq(0).find(".MuiInputBase-root").find("input").clear().type(searchString); // Enter m in text box
                 cy.get(".MuiCardActions-root").should("have.length", 0);
             });
         });
@@ -85,7 +85,7 @@ describe("Filtering People", () => {
                 const matchingNamePeople = filterByName(cast, searchNameString);
                 const searchCharString = "a";
                 const matchingPeople = filterByCharacter(matchingNamePeople, searchCharString);
-                cy.get("#filled-search").eq(0).clear().type(searchNameString); // Enter c in text box
+                cy.get(".MuiFormControl-root").eq(0).find(".MuiInputBase-root").find("input").clear().type(searchNameString); // Enter c in text box
                 cy.get(".MuiFormControl-root").eq(1).find(".MuiInputBase-root").find("input").clear().type(searchCharString); // Enter a in text box
                 if (matchingPeople.length > 0) {
                     cy.get(".MuiCardActions-root").each(($card, index) => {
@@ -135,7 +135,7 @@ describe("Filtering People", () => {
             it("only display crew members with 'm' in their name", () => {
                 const searchString = "m";
                 const matchingPeople = filterByName(crew, searchString);
-                cy.get("#filled-search").eq(0).clear().type(searchString); // Enter m in text box
+                cy.get(".MuiFormControl-root").eq(0).find(".MuiInputBase-root").find("input").clear().type(searchString); // Enter m in text box
                 if (matchingPeople.length > 0) {
                     cy.get(".MuiCardActions-root").each(($card, index) => {
                         cy.wrap($card).find("a").contains(matchingPeople[index].name);
@@ -147,7 +147,7 @@ describe("Filtering People", () => {
 
             it("displays nothing when no people match", () => {
                 const searchString = "xxxzy";
-                cy.get("#filled-search").clear().type(searchString); // Enter m in text box
+                cy.get(".MuiFormControl-root").eq(0).find(".MuiInputBase-root").find("input").clear().type(searchString); // Enter m in text box
                 cy.get(".MuiCardActions-root").should("have.length", 0);
             });
         });
@@ -179,8 +179,8 @@ describe("Filtering People", () => {
                 const matchingNamePeople = filterByName(crew, searchNameString);
                 const searchJobString = "so";
                 const matchingPeople = filterByJob(matchingNamePeople, searchJobString);
-                cy.get("#filled-search").eq(0).clear().type(searchNameString); // Enter c in text box
-                cy.get(".MuiFormControl-root").eq(1).find(".MuiInputBase-root").find("input").clear().type(searchJobString); // Enter a in text box
+                cy.get(".MuiFormControl-root").eq(0).find(".MuiInputBase-root").find("input").clear().type(searchNameString); // Enter a in text box
+                cy.get(".MuiFormControl-root").eq(1).find(".MuiInputBase-root").find("input").clear().type(searchJobString); // Enter so in text box
                 if (matchingPeople.length > 0) {
                     cy.get(".MuiCardActions-root").each(($card, index) => {
                         cy.wrap($card).find("a").contains(matchingPeople[index].name);

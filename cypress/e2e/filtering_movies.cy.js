@@ -38,7 +38,8 @@ describe("Filtering Movies", () => {
             it("only display movies with 'm' in the title", () => {
                 const searchString = "m";
                 const matchingMovies = filterByTitle(sorted_movies, searchString);
-                cy.get("#filled-search").clear().type(searchString); // Enter m in text box
+                cy.get("[id='filled-search']");
+                cy.get("[id='filled-search']").clear().type(searchString); // Enter m in text box
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
                         cy.wrap($card).find("p").contains(matchingMovies[index].title);
@@ -50,7 +51,8 @@ describe("Filtering Movies", () => {
 
             it("displays nothing when no movies match", () => {
                 const searchString = "xxxzy";
-                cy.get("#filled-search").clear().type(searchString); // Enter m in text box
+                cy.get("[id='filled-search']");
+                cy.get("[id='filled-search']").clear().type(searchString); // Enter m in text box
                 cy.get(".MuiCardHeader-content").should("have.length", 0);
             });
         });
@@ -61,7 +63,9 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMovies = filterByGenre(sorted_movies, genreIds);
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="1"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
@@ -79,10 +83,12 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMovies = filterByGenre(sorted_movies, genreIds);
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="3"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
@@ -99,10 +105,12 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMovies = filterByGenre(sorted_movies, genreIds);
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="3"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Clear the Comedy filter
                 cy.get("svg").eq(3).should('have.attr', 'data-testid', 'CancelIcon').click();
@@ -116,10 +124,11 @@ describe("Filtering Movies", () => {
 
             it("clears all genre filters when removed one by one", () => {
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Clear the filters
                 cy.get(".MuiAutocomplete-root").find('svg').eq(0).should('have.attr', 'data-testid', 'CancelIcon').click();
@@ -132,10 +141,11 @@ describe("Filtering Movies", () => {
 
             it("clears all genre filters when removed all at once", () => {
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Clear the filters
                 cy.get(".MuiAutocomplete-endAdornment").find('button').eq(0).click();
@@ -153,12 +163,14 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMoviesGenre = filterByGenre(sorted_movies, genreIds);
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Add title filter
                 const searchString = "c";
                 const matchingMovies = filterByTitle(matchingMoviesGenre, searchString);
-                cy.get("#filled-search").clear().type(searchString); // Enter c in text box
+                cy.get("[id='filled-search']");
+                cy.get("[id='filled-search']").clear().type(searchString); // Enter c in text box
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
                         cy.wrap($card).find("p").contains(matchingMovies[index].title);
@@ -179,6 +191,7 @@ describe("Filtering Movies", () => {
             sorted_movies = sortItemsLargeFirst(movies, "popularity");
             const favorite_ids = [0,1,5,3,6];
             favorite_movies = sorted_movies.filter(movie => favorite_ids.includes(sorted_movies.indexOf(movie)));
+            cy.url().should('eq', 'http://localhost:3000/movies/favorites');
         });
 
         describe("By movie title", () => {
@@ -186,7 +199,8 @@ describe("Filtering Movies", () => {
                 const searchString = "a";
                 const matchingMovies = filterByTitle(favorite_movies, searchString);
                 console.log(matchingMovies);
-                cy.get("#filled-search").clear().type(searchString); // Enter m in text box
+                cy.get("[id='filled-search']");
+                cy.get("[id='filled-search']").clear().type(searchString); // Enter m in text box
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
                         cy.wrap($card).find("p").contains(matchingMovies[index].title);
@@ -198,7 +212,8 @@ describe("Filtering Movies", () => {
 
             it("displays nothing when no movies match", () => {
                 const searchString = "xxxzy";
-                cy.get("#filled-search").clear().type(searchString); // Enter m in text box
+                cy.get("[id='filled-search']");
+                cy.get("[id='filled-search']").clear().type(searchString); // Enter m in text box
                 cy.get(".MuiCardHeader-content").should("have.length", 0);
             });
         });
@@ -209,7 +224,9 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMovies = filterByGenre(favorite_movies, genreIds);
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="1"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
@@ -227,10 +244,12 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMovies = filterByGenre(favorite_movies, genreIds);
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="3"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
@@ -247,10 +266,12 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMovies = filterByGenre(favorite_movies, genreIds);
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="3"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Clear the Comedy filter
                 cy.get("svg").eq(3).should('have.attr', 'data-testid', 'CancelIcon').click();
@@ -264,10 +285,12 @@ describe("Filtering Movies", () => {
 
             it("clears all genre filters when removed one by one", () => {
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="3"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Clear the filters
                 cy.get(".MuiAutocomplete-root").find('svg').eq(0).should('have.attr', 'data-testid', 'CancelIcon').click();
@@ -280,10 +303,12 @@ describe("Filtering Movies", () => {
 
             it("clears all genre filters when removed all at once", () => {
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="3"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Clear the filters
                 cy.get(".MuiAutocomplete-endAdornment").find('button').eq(0).click();
@@ -301,12 +326,15 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMoviesGenre = filterByGenre(favorite_movies, genreIds);
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="1"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Add title filter
                 const searchString = "c";
                 const matchingMovies = filterByTitle(matchingMoviesGenre, searchString);
-                cy.get("#filled-search").clear().type(searchString); // Enter c in text box
+                cy.get("[id='filled-search']");
+                cy.get("[id='filled-search']").clear().type(searchString); // Enter c in text box
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
                         cy.wrap($card).find("p").contains(matchingMovies[index].title);
@@ -338,7 +366,8 @@ describe("Filtering Movies", () => {
             it("only display movies with 'a' in the title", () => {
                 const searchString = "a";
                 const matchingMovies = filterByTitle(sorted_movies, searchString);
-                cy.get("#filled-search").clear().type(searchString); // Enter m in text box
+                cy.get("[id='filled-search']");
+                cy.get("[id='filled-search']").clear().type(searchString); // Enter m in text box
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
                         cy.wrap($card).find("p").contains(matchingMovies[index].title);
@@ -350,7 +379,8 @@ describe("Filtering Movies", () => {
 
             it("displays nothing when no movies match", () => {
                 const searchString = "xxxzy";
-                cy.get("#filled-search").clear().type(searchString); // Enter m in text box
+                cy.get("[id='filled-search']");
+                cy.get("[id='filled-search']").clear().type(searchString); // Enter m in text box
                 cy.get(".MuiCardHeader-content").should("have.length", 0);
             });
         });
@@ -361,7 +391,7 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMovies = filterByGenre(sorted_movies, genreIds);
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
@@ -379,10 +409,12 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMovies = filterByGenre(sorted_movies, genreIds);
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']")
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="3"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
@@ -399,10 +431,12 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMovies = filterByGenre(sorted_movies, genreIds);
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="3"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Clear the Comedy filter
                 cy.get("svg").eq(3).should('have.attr', 'data-testid', 'CancelIcon').click();
@@ -416,10 +450,12 @@ describe("Filtering Movies", () => {
 
             it("clears all genre filters when removed one by one", () => {
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="3"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Clear the filters
                 cy.get(".MuiAutocomplete-root").find('svg').eq(0).should('have.attr', 'data-testid', 'CancelIcon').click();
@@ -432,10 +468,12 @@ describe("Filtering Movies", () => {
 
             it("clears all genre filters when removed all at once", () => {
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="3"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Clear the filters
                 cy.get(".MuiAutocomplete-endAdornment").find('button').eq(0).click();
@@ -453,12 +491,15 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMoviesGenre = filterByGenre(sorted_movies, genreIds);
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="1"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Add title filter
                 const searchString = "c";
                 const matchingMovies = filterByTitle(matchingMoviesGenre, searchString);
-                cy.get("#filled-search").clear().type(searchString); // Enter c in text box
+                cy.get("[id='filled-search']");
+                cy.get("[id='filled-search']").clear().type(searchString); // Enter c in text box
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
                         cy.wrap($card).find("p").contains(matchingMovies[index].title);
@@ -489,13 +530,15 @@ describe("Filtering Movies", () => {
             sorted_movies = sortItemsLargeFirst(movies, "popularity");
             const mustwatch_ids = [0,1,5,3,6];
             mustwatch_movies = sorted_movies.filter(movie => mustwatch_ids.includes(sorted_movies.indexOf(movie)));
+            cy.url().should('eq', 'http://localhost:3000/movies/mustwatch');
         });
 
         describe("By movie title", () => {
             it("only display movies with 'a' in the title", () => {
                 const searchString = "a";
                 const matchingMovies = filterByTitle(mustwatch_movies, searchString);
-                cy.get("#filled-search").clear().type(searchString); // Enter m in text box
+                cy.get("[id='filled-search']");
+                cy.get("[id='filled-search']").clear().type(searchString); // Enter m in text box
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
                         cy.wrap($card).find("p").contains(matchingMovies[index].title);
@@ -507,7 +550,8 @@ describe("Filtering Movies", () => {
 
             it("displays nothing when no movies match", () => {
                 const searchString = "xxxzy";
-                cy.get("#filled-search").clear().type(searchString); // Enter m in text box
+                cy.get("[id='filled-search']");
+                cy.get("[id='filled-search']").clear().type(searchString); // Enter m in text box
                 cy.get(".MuiCardHeader-content").should("have.length", 0);
             });
         });
@@ -518,7 +562,9 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMovies = filterByGenre(mustwatch_movies, genreIds);
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="1"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
@@ -536,10 +582,12 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMovies = filterByGenre(mustwatch_movies, genreIds);
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="3"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
@@ -556,10 +604,12 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMovies = filterByGenre(mustwatch_movies, genreIds);
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="3"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Clear the Comedy filter
                 cy.get("svg").eq(3).should('have.attr', 'data-testid', 'CancelIcon').click();
@@ -573,10 +623,12 @@ describe("Filtering Movies", () => {
 
             it("clears all genre filters when removed one by one", () => {
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="3"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Clear the filters
                 cy.get(".MuiAutocomplete-root").find('svg').eq(0).should('have.attr', 'data-testid', 'CancelIcon').click();
@@ -589,10 +641,12 @@ describe("Filtering Movies", () => {
 
             it("clears all genre filters when removed all at once", () => {
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="3"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Clear the filters
                 cy.get(".MuiAutocomplete-endAdornment").find('button').eq(0).click();
@@ -610,12 +664,15 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMoviesGenre = filterByGenre(mustwatch_movies, genreIds);
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="1"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Add title filter
                 const searchString = "a";
                 const matchingMovies = filterByTitle(matchingMoviesGenre, searchString);
-                cy.get("#filled-search").clear().type(searchString); // Enter a in text box
+                cy.get("[id='filled-search']");
+                cy.get("[id='filled-search']").clear().type(searchString); // Enter a in text box
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
                         cy.wrap($card).find("p").contains(matchingMovies[index].title);
@@ -656,7 +713,8 @@ describe("Filtering Movies", () => {
             it("only display movies with 'a' in the title", () => {
                 const searchString = "a";
                 const matchingMovies = filterByTitle(sorted_movies_week, searchString);
-                cy.get("#filled-search").clear().type(searchString); // Enter m in text box
+                cy.get("[id='filled-search']");
+                cy.get("[id='filled-search']").clear().type(searchString); // Enter m in text box
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
                         cy.wrap($card).find("p").contains(matchingMovies[index].title);
@@ -668,7 +726,8 @@ describe("Filtering Movies", () => {
 
             it("displays nothing when no movies match", () => {
                 const searchString = "xxxzy";
-                cy.get("#filled-search").clear().type(searchString); // Enter m in text box
+                cy.get("[id='filled-search']");
+                cy.get("[id='filled-search']").clear().type(searchString); // Enter m in text box
                 cy.get(".MuiCardHeader-content").should("have.length", 0);
             });
         });
@@ -679,7 +738,9 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMovies = filterByGenre(sorted_movies_week, genreIds);
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="1"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
@@ -697,10 +758,12 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMovies = filterByGenre(sorted_movies_week, genreIds);
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
+                cy.get('.MuiAutocomplete-popper li[data-option-index="3"]');
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
@@ -717,10 +780,11 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMovies = filterByGenre(sorted_movies_week, genreIds);
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Clear the Comedy filter
                 cy.get("svg").eq(4).should('have.attr', 'data-testid', 'CancelIcon').click();
@@ -734,10 +798,11 @@ describe("Filtering Movies", () => {
 
             it("clears all genre filters when removed one by one", () => {
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Clear the filters
                 cy.get(".MuiAutocomplete-root").find('svg').eq(0).should('have.attr', 'data-testid', 'CancelIcon').click();
@@ -750,10 +815,11 @@ describe("Filtering Movies", () => {
 
             it("clears all genre filters when removed all at once", () => {
                 //Select Comedy
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Clear the filters
                 cy.get(".MuiAutocomplete-endAdornment").find('button').eq(0).click();
@@ -771,12 +837,14 @@ describe("Filtering Movies", () => {
                 const genreIds = selectedGenres.map(genre => genre.id);
                 const matchingMoviesGenre = filterByGenre(sorted_movies_week, genreIds);
                 //Select Adventure
-                cy.get("#genre-select").click();
+                cy.get("[id='genre-select']");
+                cy.get("[id='genre-select']").click();
                 cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                 //Add title filter
                 const searchString = "a";
                 const matchingMovies = filterByTitle(matchingMoviesGenre, searchString);
-                cy.get("#filled-search").clear().type(searchString); // Enter a in text box
+                cy.get("[id='filled-search']");
+                cy.get("[id='filled-search']").clear().type(searchString); // Enter a in text box
                 if (matchingMovies.length > 0) {
                     cy.get(".MuiCardHeader-content").each(($card, index) => {
                         cy.wrap($card).find("p").contains(matchingMovies[index].title);
@@ -810,14 +878,15 @@ describe("Filtering Movies", () => {
                     .within(() => {
                         cy.get("h1").contains("Filter Movies");
                         //Check if Input and Select fields are as expected
-                        cy.get("#filled-search").should('have.class',
+                        cy.get("[id='filled-search']");
+                        cy.get("[id='filled-search']").should('have.class',
                             "MuiInputBase-input MuiFilledInput-input MuiInputBase-inputTypeSearch");
                         cy.get("#time-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
                         //Check if Trending is set to today
                         .contains("Today");
-                        cy.get("#genre-select").should('have.class',
+                        cy.get("[id='genre-select']").should('have.class',
                             "MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused");
-                        cy.get("#sort-select").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
+                        cy.get("[id='sort-select']").should('have.class', "MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input")
                         //Check if Movies are sorted by popularity by default
                         .contains("Popularity");
                     });
@@ -864,7 +933,8 @@ describe("Filtering Movies", () => {
                     it("only display movies with 'a' in the title", () => {
                         const searchString = "a";
                         const matchingMovies = filterByTitle(sorted_movies_day, searchString);
-                        cy.get("#filled-search").clear().type(searchString); // Enter m in text box
+                        cy.get("[id='filled-search']");
+                        cy.get("[id='filled-search']").clear().type(searchString); // Enter m in text box
                         if (matchingMovies.length > 0) {
                             cy.get(".MuiCardHeader-content").each(($card, index) => {
                                 cy.wrap($card).find("p").contains(matchingMovies[index].title);
@@ -876,7 +946,8 @@ describe("Filtering Movies", () => {
         
                     it("displays nothing when no movies match", () => {
                         const searchString = "xxxzy";
-                        cy.get("#filled-search").clear().type(searchString); // Enter m in text box
+                        cy.get("[id='filled-search']");
+                        cy.get("[id='filled-search']").clear().type(searchString); // Enter m in text box
                         cy.get(".MuiCardHeader-content").should("have.length", 0);
                     });
                 });
@@ -887,7 +958,8 @@ describe("Filtering Movies", () => {
                         const genreIds = selectedGenres.map(genre => genre.id);
                         const matchingMovies = filterByGenre(sorted_movies_day, genreIds);
                         //Select Adventure
-                        cy.get("#genre-select").click();
+                        cy.get("[id='genre-select']");
+                        cy.get("[id='genre-select']").click();
                         cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                         if (matchingMovies.length > 0) {
                             cy.get(".MuiCardHeader-content").each(($card, index) => {
@@ -905,10 +977,11 @@ describe("Filtering Movies", () => {
                         const genreIds = selectedGenres.map(genre => genre.id);
                         const matchingMovies = filterByGenre(sorted_movies_day, genreIds);
                         //Select Comedy
-                        cy.get("#genre-select").click();
+                        cy.get("[id='genre-select']");
+                        cy.get("[id='genre-select']").click();
                         cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                         //Select Adventure
-                        cy.get("#genre-select").click();
+                        cy.get("[id='genre-select']").click();
                         cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                         if (matchingMovies.length > 0) {
                             cy.get(".MuiCardHeader-content").each(($card, index) => {
@@ -925,10 +998,11 @@ describe("Filtering Movies", () => {
                         const genreIds = selectedGenres.map(genre => genre.id);
                         const matchingMovies = filterByGenre(sorted_movies_day, genreIds);
                         //Select Comedy
-                        cy.get("#genre-select").click();
+                        cy.get("[id='genre-select']");
+                        cy.get("[id='genre-select']").click();
                         cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                         //Select Adventure
-                        cy.get("#genre-select").click();
+                        cy.get("[id='genre-select']").click();
                         cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                         //Clear the Comedy filter
                         cy.get("svg").eq(4).should('have.attr', 'data-testid', 'CancelIcon').click();
@@ -942,10 +1016,11 @@ describe("Filtering Movies", () => {
         
                     it("clears all genre filters when removed one by one", () => {
                         //Select Comedy
-                        cy.get("#genre-select").click();
+                        cy.get("[id='genre-select']");
+                        cy.get("[id='genre-select']").click();
                         cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                         //Select Adventure
-                        cy.get("#genre-select").click();
+                        cy.get("[id='genre-select']").click();
                         cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                         //Clear the filters
                         cy.get(".MuiAutocomplete-root").find('svg').eq(0).should('have.attr', 'data-testid', 'CancelIcon').click();
@@ -958,10 +1033,11 @@ describe("Filtering Movies", () => {
         
                     it("clears all genre filters when removed all at once", () => {
                         //Select Comedy
-                        cy.get("#genre-select").click();
+                        cy.get("[id='genre-select']");
+                        cy.get("[id='genre-select']").click();
                         cy.get('.MuiAutocomplete-popper li[data-option-index="3"]').click();
                         //Select Adventure
-                        cy.get("#genre-select").click();
+                        cy.get("[id='genre-select']").click();
                         cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                         //Clear the filters
                         cy.get(".MuiAutocomplete-endAdornment").find('button').eq(0).click();
@@ -978,13 +1054,16 @@ describe("Filtering Movies", () => {
                         const selectedGenres = [{"id":12,"name":"Adventure"}];
                         const genreIds = selectedGenres.map(genre => genre.id);
                         const matchingMoviesGenre = filterByGenre(sorted_movies_day, genreIds);
-                        //Select Adventure
-                        cy.get("#genre-select").click();
+                        //Select 
+                        cy.get("[id='genre-select']");
+                        cy.get("[id='genre-select']").click();
+                        cy.get('.MuiAutocomplete-popper li[data-option-index="1"]');
                         cy.get('.MuiAutocomplete-popper li[data-option-index="1"]').click();
                         //Add title filter
                         const searchString = "a";
                         const matchingMovies = filterByTitle(matchingMoviesGenre, searchString);
-                        cy.get("#filled-search").clear().type(searchString); // Enter a in text box
+                        cy.get("[id='filled-search']");
+                        cy.get("[id='filled-search']").clear().type(searchString); // Enter a in text box
                         if (matchingMovies.length > 0) {
                             cy.get(".MuiCardHeader-content").each(($card, index) => {
                                 cy.wrap($card).find("p").contains(matchingMovies[index].title);
