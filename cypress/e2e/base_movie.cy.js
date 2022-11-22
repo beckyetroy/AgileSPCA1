@@ -62,7 +62,7 @@ describe("Base tests for pages concerned with a single movie", () => {
                     .and('contain', movie.tagline)
                     .find('a').should('have.attr', 'href', movie.homepage)
                     .find('svg').should('have.attr', 'data-testid', 'HomeIcon');
-            cy.get("h3").contains("Overview");
+            cy.get(".MuiGrid-root.MuiGrid-item").eq(1).find("h3").contains("Overview");
 
             //Necessary to prevent errors when API returns double spacing.
             var overview = movie.overview.replace( /\s\s+/g, ' ' );
